@@ -1,8 +1,8 @@
 @font-face {
   /* 为载入的字体取名字(随意) */
-  font-family: 'xiawuwenkai';	
+  font-family: 'xiawu';	
   /* 字体文件地址(相对或者绝对路径都可以) */
-  src: url(/source/font/霞骛文楷.woff2);
+  src: url(/font/霞鹜文楷.woff2);
   /* 定义加粗样式(加粗多少) */
   font-weight: normal;
   /* 定义字体样式(斜体/非斜体) */
@@ -21,7 +21,7 @@
 }
 
 .el-input.el-input--small.el-input-group.el-input-group--prepend:nth-child(3):before {
-  content: '可以据此访问您的网站🔗';
+  content: '可以通过链接访问您的网站🔗';
 }
 
 /* 当用户点击输入框时显示 */
