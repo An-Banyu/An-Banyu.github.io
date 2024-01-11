@@ -64,3 +64,17 @@
   left: 50%;
   transform: translate(-50%, -48px);
 }
+
+/* 页脚与头图透明 */
+#footer {
+  background: transparent !important;
+}
+
+
+/* 夜间模式遮罩透明 */
+[data-theme="dark"] #footer::before {
+  background: transparent !important;
+}
+[data-theme="dark"] #page-header::before {
+  background: transparent !important;
+}
