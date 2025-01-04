@@ -12,10 +12,16 @@
 }
 
 :root {
+  --global-font: 'xiawu', 'Quicksand', 'Nimbus Roman No9 L', 'PingFang SC', 'Hiragino Sans GB', 'Noto Serif SC', 'Microsoft Yahei', 'WenQuanYi Micro Hei', 'ST Heiti', sans-serif;
   --trans-light: rgba(255, 255, 255, 0.88);
   --trans-dark: rgba(25, 25, 25, 0.88);
   --border-style: 1px solid rgb(169, 169, 169);
   --backdrop-filter: blur(5px) saturate(150%);
+}
+
+/* 使用全局字体变量 */
+body {
+  font-family: var(--global-font);
 }
 
 /* 首页文章卡片 */
