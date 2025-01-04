@@ -73,7 +73,9 @@ div#archive {
 #footer {
   background: transparent !important;
 }
-
+#page-header {
+  background: transparent !important;
+}
 
 
 /* 白天模式遮罩透明 */
