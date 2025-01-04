@@ -71,10 +71,10 @@ div#archive {
 
 /* 页脚与头图透明 */
 #footer {
-  background: black !important;
+  background: transparent !important;
 }
 #page-header {
-  background: url(https://s2.loli.net/2024/01/08/2NLQjw1oVCxdg4v.jpg) no-repeat center center;
+  background: transparent ;
 }
 
 
