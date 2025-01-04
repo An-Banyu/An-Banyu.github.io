@@ -70,13 +70,7 @@ div#archive {
 }
 
 
-/* 页脚与头图透明 */
-#footer {
-  background: transparent !important;
-}
-#page-header {
-  background: transparent !important;
-}
+
 
 /* 白天模式遮罩透明 */
 #footer::before {
