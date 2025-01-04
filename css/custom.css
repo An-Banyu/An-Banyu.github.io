@@ -74,7 +74,10 @@ div#archive {
   background: transparent !important;
 }
 #page-header {
-  background: transparent !important;
+  #page-header {
+    background-color: rgba(255, 255, 255, 0.5); /* 半透明白色 */
+  }
+  
 }
 
 
