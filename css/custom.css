@@ -60,6 +60,16 @@ div#archive {
   background: rgba(0, 0, 0, 0.7) !important;
 }
 
+#web_bg {
+  /* 背景图像的地址（url括号里）  */
+  background: url(https://s2.loli.net/2024/01/08/2NLQjw1oVCxdg4v.jpg);
+  /* 背景图像不重复 */
+  background-repeat: no-repeat;
+  /* 背景图像大小 */
+  background-size: cover;
+}
+
+
 /* 夜间模式遮罩 */
 [data-theme="dark"] #recent-posts > .recent-post-item,
 [data-theme="dark"] #aside-content .card-widget,
