@@ -122,3 +122,31 @@ div#archive {
   background: rgba(25, 25, 25, 0.9) !important;
   color: #ffffff;
 }
+
+/* 小冰分类分类磁铁黑夜模式适配 */
+/* 一般状态 */
+[data-theme="dark"] .magnet_link_context {
+  background: #1e1e1e;
+  color: antiquewhite;
+}
+/* 鼠标悬浮状态 */
+[data-theme="dark"] .magnet_link_context:hover {
+  background: #3ecdf1;
+  color: #f2f2f2;
+}
+
+.nav-fixed #nav{
+  transform: translateY(58px)!important;
+  -webkit-transform: translateY(58px)!important;
+  -moz-transform: translateY(58px)!important;
+  -ms-transform: translateY(58px)!important;
+  -o-transform: translateY(58px)!important;
+}
+#nav{
+  transition: none!important;
+  -webkit-transition: none!important;
+  -moz-transition: none!important;
+  -ms-transition: none!important;
+  -o-transition: none!important;
+}
+
