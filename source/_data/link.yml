@@ -1,0 +1,23 @@
+- class_name: 友情链接
+  class_desc: 
+  link_list:
+    - name: 桂电八院科协
+      link: https://www.guet-bykx.top/
+      avatar: https://s2.loli.net/2025/01/06/ZADOpiSUKo1BVqn.jpg
+      descr: 桂林电子科技大学电子工程与自动化学院科技协会
+
+
+- class_name: 网站
+  class_desc: 值得推荐的网站  
+  link_list:
+    - name: Fomalhaut🥝
+      link: https://www.fomal.cc/
+      avatar: https://www.fomal.cc/assets/avatar.webp
+      descr: Future is now 🍭🍭🍭
+      siteshot: https://source.fomal.cc/siteshot/www.fomal.cc.webp
+      
+    - name: 唐志远
+      link: https://fe32.top/
+      avatar: https://bu.dusays.com/2022/05/02/626f92e193879.jpg
+      descr: 古今之成大事者，不惟有超世之才，亦必有坚忍不拔之志。
+
