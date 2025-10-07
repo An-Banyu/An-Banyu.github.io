@@ -17,6 +17,15 @@
   --trans-dark: rgba(25, 25, 25, 0.88);
   --border-style: 1px solid rgb(169, 169, 169);
   --backdrop-filter: blur(5px) saturate(150%);
+  /* Subtitle customization */
+  --subtitle-color: #ffffff; /* main subtitle text color */
+  /* Use a lighter, thinner stroke so white stays bright */
+  --subtitle-stroke-color: rgba(94, 86, 86, 0.45); /* stroke color (dark, but semi-transparent) */
+  --subtitle-stroke-width: 0.8px; /* stroke width */
+  /* subtle dark halo fallback */
+  --subtitle-halo: 0 0 1px rgba(99, 93, 93, 0.55), 0 1px 1px rgba(0,0,0,0.48), 0 -1px 1px rgba(0,0,0,0.48), 1px 0 1px rgba(0,0,0,0.48), -1px 0 1px rgba(0,0,0,0.48);
+  --subtitle-light-halo: 0 0 2px rgba(255,255,255,0.06), 0 1px 2px rgba(0,0,0,0.4);
+  --subtitle-dark-stroke-color: rgba(255,255,255,0.9); /* stroke color to use in dark mode */
 }
 
 /* 使用全局字体变量 */
@@ -215,5 +224,41 @@ div#archive {
   border-color: #fff;
   color: #fff;
   background: rgba(255,255,255,0.06);
+}
+
+/* Subtitle outline / halo to improve legibility on hero background */
+#site-subtitle, #page-header #site-subtitle, #site-subtitle span#subtitle {
+  color: var(--subtitle-color);
+  /* Prefer native stroke when available */
+  -webkit-text-stroke: var(--subtitle-stroke-width) var(--subtitle-stroke-color);
+  /* Fully compatible fallback using multiple layered text-shadows to create an outline/halo */
+  text-shadow: var(--subtitle-halo);
+  /* Ensure subtitle sits above background layers */
+  position: relative;
+  z-index: 2;
+}
+
+/* Slightly stronger halo in light theme when the background is bright */
+#page-header:not([data-theme="dark"]) #site-subtitle, #site-subtitle:not([data-theme="dark"]) {
+  /* For light theme, use darker stroke and a subtle light halo to separate from bright backgrounds */
+  -webkit-text-stroke: var(--subtitle-stroke-width) var(--subtitle-stroke-color);
+  text-shadow: var(--subtitle-light-halo);
+}
+
+/* In dark mode prefer a light stroke so the subtitle stays readable over dark backgrounds */
+[data-theme="dark"] #site-subtitle, [data-theme="dark"] #page-header #site-subtitle {
+  /* In dark mode prefer a light stroke so the subtitle stays readable over dark backgrounds */
+  -webkit-text-stroke: calc(var(--subtitle-stroke-width) * 0.9) var(--subtitle-dark-stroke-color);
+  text-shadow: 0 0 1px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.35);
+  color: var(--subtitle-color); /* ensure color contrast */
+}
+
+/* Small screens: reduce stroke so text remains crisp */
+@media (max-width: 640px) {
+  #site-subtitle, #site-subtitle span#subtitle {
+    -webkit-text-stroke: 1px var(--subtitle-stroke-color);
+    text-shadow: 0 0 1px rgba(0,0,0,0.6);
+    font-size: 0.95rem;
+  }
 }
 
