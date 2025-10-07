@@ -171,3 +171,49 @@ div#archive {
 /* Remove avatar-specific rules on about page to hide avatar if present */
 .about-avatar { display: none !important; }
 
+/* Social buttons: pill frame and hover effect */
+.social-links .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 999px; /* pill shape */
+  border: 1px solid rgba(0,0,0,0.12);
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+  transition: all 180ms ease-in-out;
+  font-weight: 500;
+}
+
+.social-links .btn i {
+  margin-right: 8px;
+  /* 响应式图标大小：最小 14px，按视口宽度缩放，最大 20px */
+  font-size: clamp(14px, 1.6vw, 20px);
+  line-height: 1;
+  transition: transform 160ms ease;
+}
+
+.social-links .btn:hover i {
+  transform: scale(1.08);
+}
+
+.social-links .btn:hover,
+.social-links .btn:focus {
+  border-color: #000; /* 框变黑 */
+  color: #000;        /* 文字变黑 */
+  background: rgba(0,0,0,0.04);
+  outline: none;
+}
+
+/* 深色主题下把悬停颜色调整为白色以保证可读性 */
+[data-theme="dark"] .social-links .btn {
+  border-color: rgba(255,255,255,0.12);
+}
+[data-theme="dark"] .social-links .btn:hover,
+[data-theme="dark"] .social-links .btn:focus {
+  border-color: #fff;
+  color: #fff;
+  background: rgba(255,255,255,0.06);
+}
+
