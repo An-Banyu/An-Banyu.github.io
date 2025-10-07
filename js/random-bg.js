@@ -10,7 +10,7 @@
   var bgList = [
     'https://s2.loli.net/2025/10/05/QavDKncWM968tBq.jpg',
     'https://s2.loli.net/2025/01/06/m4fjdBYCKPrwGJF.jpg',
-    'https://s2.loli.net/2025/10/07/qmSYhABg9k4zs2F.jpg',
+    'https://s2.loli.net/2025/10/07/GVRMa4mPZhf6Tsv.jpg',
     'https://s2.loli.net/2025/10/07/2WQxn5iedh1C9k3.jpg',
     'https://s2.loli.net/2025/10/07/XyZ9Uh5kjnxqrb7.jpg',
     'https://s2.loli.net/2025/10/07/1EM89qO6BxXVwvt.jpg',
@@ -21,7 +21,7 @@
   ];
 
   var STORAGE_KEY = 'site_random_bg_idx_v1';
-  var MIN_INTERVAL_MS = 1000 * 60 * 1; // 1 分钟内不重复同一张
+  var MIN_INTERVAL_MS = 1000 * 60 * 1; // 1 分钟内重复同一张
 
   function pickIndex() {
     if (!bgList || bgList.length === 0) return -1;
