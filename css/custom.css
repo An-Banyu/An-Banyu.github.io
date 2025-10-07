@@ -150,3 +150,24 @@ div#archive {
   -o-transition: none!important;
 }
 
+/* About page spacing adjustments */
+.about-actions {
+  display: flex;
+  gap: 16px; /* 按钮间距 */
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.about-actions .btn {
+  padding: 10px 18px;
+}
+
+.social-links {
+  display: flex;
+  gap: 12px; /* 社交按钮间距 */
+  margin-top: 12px;
+}
+
+/* Remove avatar-specific rules on about page to hide avatar if present */
+.about-avatar { display: none !important; }
+
