@@ -164,8 +164,8 @@ div#archive {
 
 .social-links {
   display: flex;
-  gap: 12px; /* 社交按钮间距 */
-  margin-top: 12px;
+  gap: 16px; /* 社交按钮间距 */
+  margin-top: 16px;
 }
 
 /* Remove avatar-specific rules on about page to hide avatar if present */
