@@ -20,12 +20,18 @@
   /* Subtitle customization */
   --subtitle-color: #ffffff; /* main subtitle text color */
   /* Use a lighter, thinner stroke so white stays bright */
-  --subtitle-stroke-color: rgba(94, 86, 86, 0.45); /* stroke color (dark, but semi-transparent) */
+  --subtitle-stroke-color: rgba(96, 90, 90, 0.2); /* stroke color (dark, but semi-transparent) */
   --subtitle-stroke-width: 0.8px; /* stroke width */
   /* subtle dark halo fallback */
   --subtitle-halo: 0 0 1px rgba(99, 93, 93, 0.55), 0 1px 1px rgba(0,0,0,0.48), 0 -1px 1px rgba(0,0,0,0.48), 1px 0 1px rgba(0,0,0,0.48), -1px 0 1px rgba(0,0,0,0.48);
   --subtitle-light-halo: 0 0 2px rgba(255,255,255,0.06), 0 1px 2px rgba(0,0,0,0.4);
   --subtitle-dark-stroke-color: rgba(255,255,255,0.9); /* stroke color to use in dark mode */
+  /* Title customization (main site title) */
+  --title-color: #ffffff;
+  --title-stroke-color:rgba(96, 90, 90, 0.25);
+  --title-stroke-width: 0.8px;
+  --title-halo: 0 0 1px rgba(199, 175, 175, 0.55),0 2px 2px rgba(0,0,0,0.5), 0 -2px 2px rgba(0,0,0,0.5), 2px 0 2px rgba(0,0,0,0.5), -2px 0 2px rgba(0,0,0,0.5);
+  --title-dark-stroke-color: rgba(255,255,255,0.95);
 }
 
 /* 使用全局字体变量 */
@@ -236,6 +242,28 @@ div#archive {
   /* Ensure subtitle sits above background layers */
   position: relative;
   z-index: 2;
+}
+
+/* Apply similar halo/stroke to main site title and page titles */
+#site-title, #page-site-info h1 {
+  color: var(--title-color);
+  -webkit-text-stroke: var(--title-stroke-width) var(--title-stroke-color);
+  text-shadow: var(--title-halo);
+  position: relative;
+  z-index: 2;
+}
+
+[data-theme="dark"] #site-title, [data-theme="dark"] #page-site-info h1 {
+  -webkit-text-stroke: calc(var(--title-stroke-width) * 0.9) var(--title-dark-stroke-color);
+  color: var(--title-color);
+}
+
+@media (max-width: 640px) {
+  #site-title, #page-site-info h1 {
+    -webkit-text-stroke: 1px var(--title-stroke-color);
+    text-shadow: 0 0 2px rgba(0,0,0,0.45);
+    font-size: 1.2rem;
+  }
 }
 
 /* Slightly stronger halo in light theme when the background is bright */
