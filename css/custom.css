@@ -290,3 +290,19 @@ div#archive {
   }
 }
 
+/* === Disable avatar hover rotation ===
+   Some third-party CSS/animations in the theme rotate the avatar on hover.
+   The following rules force avatar images to have no transform/animation on hover.
+   This is safe to keep in `source/css/custom.css`; remove these lines to restore original behavior. */
+.avatar-img,
+.avatar-img img,
+.card-info .avatar-img,
+.card-info .avatar-img img {
+  -webkit-transform: none !important;
+  -ms-transform: none !important;
+  transform: none !important;
+  -webkit-animation: none !important;
+  animation: none !important;
+}
+
+
