@@ -138,6 +138,52 @@ div#archive {
   color: #ffffff;
 }
 
+/* Social icon hover tooltip (show local QQ/WeChat images) */
+.social-icon {
+  position: relative; /* ensure positioning context */
+}
+
+.social-tooltip {
+  position: fixed; /* use fixed to avoid overflow clipping */
+  display: none;
+  width: auto;
+  max-width: 220px;
+  padding: 6px;
+  background: rgba(0,0,0,0.85);
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  z-index: 99999;
+  transition: opacity 150ms ease, transform 150ms ease;
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.social-tooltip.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.social-tooltip img {
+  display: block;
+  width: 180px;
+  height: auto;
+  max-height: 240px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+/* small arrow under tooltip */
+.social-tooltip::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -6px;
+  border-width: 6px 6px 0 6px;
+  border-style: solid;
+  border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+}
 /* 小冰分类分类磁铁黑夜模式适配 */
 /* 一般状态 */
 [data-theme="dark"] .magnet_link_context {
