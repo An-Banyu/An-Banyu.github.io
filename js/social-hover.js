@@ -40,6 +40,55 @@
     var img = tooltip.querySelector('img');
     var activeTimer = null;
 
+    // create a small copy-tip (bottom-right) for copy feedback
+    var COPY_TIP_ID = 'social-copy-tip';
+    function createCopyTip() {
+      var tip = document.getElementById(COPY_TIP_ID) || document.createElement('div');
+      tip.id = COPY_TIP_ID;
+      tip.style.position = 'fixed';
+      tip.style.right = '22px';
+      tip.style.bottom = '72px';
+      tip.style.zIndex = 100000;
+      tip.style.padding = '8px 12px';
+      tip.style.borderRadius = '6px';
+      tip.style.background = 'rgba(0,0,0,0.78)';
+      tip.style.color = '#fff';
+      tip.style.fontSize = '13px';
+      tip.style.opacity = '0';
+      tip.style.transition = 'opacity .18s ease';
+      tip.style.pointerEvents = 'none';
+      if (!tip.parentElement) document.body.appendChild(tip);
+      return tip;
+    }
+
+    function showCopyTip(text) {
+      var tip = createCopyTip();
+      tip.textContent = text;
+      tip.style.opacity = '1';
+      setTimeout(function () { tip.style.opacity = '0'; }, 1600);
+    }
+
+    // helper to copy text with fallback
+    function copyText(text) {
+      if (!text) return Promise.reject(new Error('empty'));
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+      }
+      return new Promise(function (resolve, reject) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.left = '-99999px';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (ok) resolve(); else reject(new Error('execCommand failed'));
+        } catch (err) { reject(err); }
+      });
+    }
+
     icons.forEach(function (icon) {
       try {
         var href = icon.getAttribute('href') || '';
@@ -74,6 +123,21 @@
         window.addEventListener('resize', function () {
           tooltip.classList.remove('show'); tooltip.style.display = 'none';
         });
+
+        // if this icon is a mailto: link, bind click to copy the email address
+        if (href.indexOf('mailto:') === 0) {
+          icon.addEventListener('click', function (ev) {
+            try {
+              ev.preventDefault();
+            } catch (e) {}
+            var email = href.replace(/^mailto:/i, '').split('?')[0] || '';
+            copyText(email).then(function () {
+              showCopyTip('邮箱地址已复制: ' + email);
+            }).catch(function () {
+              showCopyTip('复制失败，请手动复制');
+            });
+          }, false);
+        }
 
       } catch (err) {
         // ignore per-element errors
