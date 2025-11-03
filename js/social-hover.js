@@ -92,31 +92,32 @@
     icons.forEach(function (icon) {
       try {
         var href = icon.getAttribute('href') || '';
-        // treat local image links (e.g., /img/wechat.jpg) as tooltip sources
-        if (!isImageHref(href)) return;
 
-        icon.addEventListener('mouseenter', function (e) {
-          if (activeTimer) { clearTimeout(activeTimer); activeTimer = null; }
-          img.src = href;
-          tooltip.classList.remove('show');
-          tooltip.style.display = 'block';
-          // wait a tick to allow image to load/size
-          // if image is cached, load event may not fire; we compute after small delay
-          setTimeout(function () {
-            positionTooltip(tooltip, icon.getBoundingClientRect(), 8);
-            tooltip.classList.add('show');
-          }, 40);
-        }, {passive: true});
-
-        icon.addEventListener('mouseleave', function () {
-          // small delay before hide to make hover less jittery
-          activeTimer = setTimeout(function () {
+        // if this icon points to an image (qq/wechat), bind hover tooltip
+        if (isImageHref(href)) {
+          icon.addEventListener('mouseenter', function (e) {
+            if (activeTimer) { clearTimeout(activeTimer); activeTimer = null; }
+            img.src = href;
             tooltip.classList.remove('show');
-            activeTimer = setTimeout(function () { tooltip.style.display = 'none'; }, 180);
-          }, 80);
-        });
+            tooltip.style.display = 'block';
+            // wait a tick to allow image to load/size
+            // if image is cached, load event may not fire; we compute after small delay
+            setTimeout(function () {
+              positionTooltip(tooltip, icon.getBoundingClientRect(), 8);
+              tooltip.classList.add('show');
+            }, 40);
+          }, {passive: true});
 
-        // also hide when scrolling or resizing
+          icon.addEventListener('mouseleave', function () {
+            // small delay before hide to make hover less jittery
+            activeTimer = setTimeout(function () {
+              tooltip.classList.remove('show');
+              activeTimer = setTimeout(function () { tooltip.style.display = 'none'; }, 180);
+            }, 80);
+          });
+        }
+
+        // also hide when scrolling or resizing (global handlers are safe to attach multiple times)
         window.addEventListener('scroll', function () {
           tooltip.classList.remove('show'); tooltip.style.display = 'none';
         }, {passive: true});
@@ -127,9 +128,7 @@
         // if this icon is a mailto: link, bind click to copy the email address
         if (href.indexOf('mailto:') === 0) {
           icon.addEventListener('click', function (ev) {
-            try {
-              ev.preventDefault();
-            } catch (e) {}
+            try { ev.preventDefault(); } catch (e) {}
             var email = href.replace(/^mailto:/i, '').split('?')[0] || '';
             copyText(email).then(function () {
               showCopyTip('邮箱地址已复制: ' + email);
