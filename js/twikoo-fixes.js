@@ -80,18 +80,24 @@
             }
           });
         }
-        if (rec.type === 'attributes' && (rec.attributeName === 'style' || rec.attributeName === 'class')) {
+        if (rec.type === 'attributes') {
           const target = rec.target;
           if (target && target instanceof Element) {
-            if (target.matches('.el-textarea__inner') || target.matches('textarea') || target.matches('[contenteditable]')) {
-              forceAdjustElement(target);
+            if (rec.attributeName === 'style' || rec.attributeName === 'class') {
+              if (target.matches('.el-textarea__inner') || target.matches('textarea') || target.matches('[contenteditable]')) {
+                forceAdjustElement(target);
+              }
+            }
+            // If img src changed, try replacing avatar if appropriate
+            if (rec.attributeName === 'src' && target.tagName === 'IMG') {
+              try { replaceAvatarIfQQ(target); } catch (e) { /* ignore */ }
             }
           }
         }
       });
     });
 
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class', 'src'] });
 
     // 多次尝试，覆盖不同渲染时机
     setTimeout(adjustEditorHeight, 100);
@@ -170,8 +176,12 @@
             replaceAllCravatars(node);
           });
         }
+        if(rec.type === 'attributes' && rec.attributeName === 'src' && rec.target instanceof Element) {
+          // attribute src changed on some element
+          replaceAllCravatars(rec.target.parentElement || rec.target);
+        }
       });
     });
-    qqObserver.observe(document.body, { childList: true, subtree: true });
+    qqObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
   });
 })();
