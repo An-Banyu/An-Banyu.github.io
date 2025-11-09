@@ -345,7 +345,7 @@ div#archive {
 #twikoo-wrap .tk-editor .tk-textarea textarea,
 #twikoo-wrap textarea,
 #twikoo-wrap .tk-editor textarea {
-  min-height: 120px !important; /* 初始高度，可根据喜好调整 */
+  min-height: 480px !important; /* 初始高度，可根据喜好调整 */
   height: auto !important;
   max-height: 480px !important;
   resize: vertical !important;
