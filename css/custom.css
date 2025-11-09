@@ -341,53 +341,19 @@ div#archive {
   animation: none !important;
 }
 
-/* Twikoo: 调整评论输入框初始高度与兼容更多结构
-   说明：
-   - Twikoo 可能使用 textarea、contenteditable div 或不同的类名渲染编辑器。
-   - 本规则使用更广的选择器并加上 !important，便于覆盖主题或第三方样式。
-   - 如果仍不生效，请在浏览器 F12 中找到实际的输入元素（textarea 或 contenteditable），并把该选择器发给我，我再精准修改。
-*/
-
-/* 常见 textarea 或 编辑容器 */
-#twikoo-wrap textarea,
-#twikoo-wrap .tk-editor textarea,
-#twikoo-wrap .tk-textarea textarea,
-#twikoo-wrap .twikoo-editor textarea,
-/* contenteditable 编辑器（有些版本用 div[contenteditable]） */
-#twikoo-wrap [contenteditable],
-#twikoo-wrap .tk-editor [contenteditable],
-#twikoo-wrap .tk-textarea [contenteditable],
-#twikoo-wrap .twikoo-editor [contenteditable] {
-  min-height: 360px !important; /* 更保守的默认高度，便于手机/窄屏 */
-  height: auto !important;
-  max-height: 600px !important;
-  resize: vertical !important;
-  font-size: 15px !important;
-  line-height: 1.45 !important;
-  box-sizing: border-box !important;
-}
-
-/* 如果 Twikoo 使用内联样式并带有 style="height:...", 也尝试覆盖行内高度（仅在元素上可设置） */
-#twikoo-wrap textarea[style],
-#twikoo-wrap [contenteditable][style] {
-  height: auto !important;
-  min-height: 120px !important;
-}
-
-/* 规范化 Twikoo 头像尺寸与裁切（保留） */
-#twikoo-wrap .tk-avatar img,
-#twikoo-wrap .tk-comment .tk-avatar img,
-#twikoo-wrap .twikoo-avatar img {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 50% !important;
-  object-fit: cover !important;
-  display: inline-block !important;
-}
 
 
 /* 保证深色/浅色主题下视觉一致性 */
 [data-theme="dark"] #twikoo-wrap .tk-avatar { opacity: 0.95; }
 [data-theme="light"] #twikoo-wrap .tk-avatar { opacity: 1; }
+
+/* 针对 Element UI / el-textarea 的特殊类名覆盖（优先级更高，覆盖内联高度） */
+#twikoo-wrap .el-textarea__inner {
+  min-height: 120px !important;
+  height: auto !important;
+  max-height: 600px !important;
+  background-image: none !important; /* 去掉不必要的背景图 */
+  box-sizing: border-box !important;
+}
 
 
