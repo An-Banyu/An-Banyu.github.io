@@ -341,4 +341,31 @@ div#archive {
   animation: none !important;
 }
 
+/* Twikoo: 调整评论输入框初始高度*/
+#twikoo-wrap .tk-editor .tk-textarea textarea,
+#twikoo-wrap textarea,
+#twikoo-wrap .tk-editor textarea {
+  min-height: 120px !important; /* 初始高度，可根据喜好调整 */
+  height: auto !important;
+  max-height: 480px !important;
+  resize: vertical !important;
+  font-size: 15px !important;
+  line-height: 1.45 !important;
+}
+
+/* 规范化 Twikoo 头像尺寸与裁切 */
+#twikoo-wrap .tk-avatar img,
+#twikoo-wrap .tk-comment .tk-avatar img {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  display: inline-block !important;
+}
+
+
+/* 保证深色/浅色主题下视觉一致性 */
+[data-theme="dark"] #twikoo-wrap .tk-avatar { opacity: 0.95; }
+[data-theme="light"] #twikoo-wrap .tk-avatar { opacity: 1; }
+
 
