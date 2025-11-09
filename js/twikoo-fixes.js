@@ -80,24 +80,18 @@
             }
           });
         }
-        if (rec.type === 'attributes') {
+        if (rec.type === 'attributes' && (rec.attributeName === 'style' || rec.attributeName === 'class')) {
           const target = rec.target;
           if (target && target instanceof Element) {
-            if (rec.attributeName === 'style' || rec.attributeName === 'class') {
-              if (target.matches('.el-textarea__inner') || target.matches('textarea') || target.matches('[contenteditable]')) {
-                forceAdjustElement(target);
-              }
-            }
-            // If img src changed, try replacing avatar if appropriate
-            if (rec.attributeName === 'src' && target.tagName === 'IMG') {
-              try { replaceAvatarIfQQ(target); } catch (e) { /* ignore */ }
+            if (target.matches('.el-textarea__inner') || target.matches('textarea') || target.matches('[contenteditable]')) {
+              forceAdjustElement(target);
             }
           }
         }
       });
     });
 
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class', 'src'] });
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
 
     // 多次尝试，覆盖不同渲染时机
     setTimeout(adjustEditorHeight, 100);
@@ -105,83 +99,74 @@
     setTimeout(adjustEditorHeight, 1500);
     setTimeout(adjustEditorHeight, 3000);
 
-    // 替换 cravatar/gravatar 等默认头像为 QQ qlogo（如果能从评论中识别到 QQ 号）
-    const qqRegex = /\b[1-9][0-9]{4,10}\b/;
-    const isCravatar = (url) => /cravatar\.cn|gravatar\.com|gravatar\.cn/.test(url);
-
-    const qqAvatarFor = (qq) => `https://thirdqq.qlogo.cn/g?b=sdk&nk=${qq}&s=140`;
-
-    const findQQInComment = (commentRoot) => {
-      if(!commentRoot) return null;
-      // search common sub-elements where nickname or author may appear
-      const selectors = ['.tk-meta', '.tk-author', '.tk-nick', '.tk-name', '.tk-info', '.tk-user', '.tk-comment-meta', '.comment-author', '.author-name'];
-      for(const sel of selectors){
-        const el = commentRoot.querySelector(sel);
-        if(el){
-          const text = el.textContent || '';
-          const m = text.match(qqRegex);
-          if(m) return m[0];
-        }
-      }
-      // fallback: scan all text nodes inside commentRoot for a QQ-like token
-      const walker = document.createTreeWalker(commentRoot, NodeFilter.SHOW_TEXT, null, false);
-      let node;
-      while(node = walker.nextNode()){
-        const txt = node.textContent || '';
-        const m = txt.match(qqRegex);
-        if(m) return m[0];
-      }
+    // === Avatar from email heuristic ===
+    // Try to extract QQ number from mailto links or data attributes and set avatar img src to thirdqq
+    const getQQFromEmail = (email) => {
+      if (!email) return null;
+      email = email.trim();
+      const at = email.indexOf('@');
+      if (at === -1) return null;
+      const local = email.slice(0, at);
+      const domain = email.slice(at + 1).toLowerCase();
+      // common QQ email forms: 123456789@qq.com
+      if (domain === 'qq.com' && /^\d{5,12}$/.test(local)) return local;
+      // sometimes user enters QQ number directly in nickname field
+      if (/^\d{5,12}$/.test(email)) return email;
       return null;
     }
 
-    const replaceAvatarIfQQ = (img) => {
-      try{
-        if(!img || !img.src) return;
-        if(!isCravatar(img.src)) return; // only replace when current avatar is cravatar/gravatar
-        const comment = img.closest('.tk-comment') || img.closest('.twikoo-comment') || img.closest('.comment') || img.closest('[data-tk]');
-        const qq = findQQInComment(comment || img.parentElement);
-        if(qq){
-          const newUrl = qqAvatarFor(qq);
-          // only change if different
-          if(img.src !== newUrl){
-            img.dataset._originalAvatar = img.src;
-            img.src = newUrl;
-            img.onerror = function(){
-              // fallback to original or proxy
-              if(img.dataset && img.dataset._originalAvatar) img.src = img.dataset._originalAvatar;
-            }
-          }
-        }
-      }catch(e){/* ignore */}
+    const setQQAvatar = (imgEl, qq) => {
+      if (!imgEl || !qq) return;
+      const qqUrl = `https://thirdqq.qlogo.cn/g?b=sdk&nk=${encodeURIComponent(qq)}&s=140`;
+      imgEl.dataset.__origSrc = imgEl.src || '';
+      imgEl.src = qqUrl;
+      imgEl.onerror = () => {
+        // fallback to images.weserv.nl proxy of original or qqUrl
+        try {
+          const fallback = imgEl.dataset.__origSrc || qqUrl;
+          const hostless = fallback.replace(/^https?:\/\//, '');
+          imgEl.src = `https://images.weserv.nl/?url=${encodeURIComponent(hostless)}`;
+        } catch (e) { /* ignore */ }
+      }
     }
 
-    const replaceAllCravatars = (root=document) => {
-      root.querySelectorAll && root.querySelectorAll('img.tk-avatar-img, img.tk-avatar, .tk-avatar img, img.avatar, img.avatar-img').forEach(img => {
-        // normalize element to HTMLImageElement
-        const image = img.tagName === 'IMG' ? img : (img.querySelector && img.querySelector('img'));
-        if(image) replaceAvatarIfQQ(image);
+    const applyAvatarFromEmailToComments = () => {
+      const wrap = document.getElementById('twikoo-wrap');
+      if (!wrap) return;
+      // Twikoo comment containers usually have class 'tk-comment'
+      wrap.querySelectorAll('.tk-comment').forEach(commentEl => {
+        // try data-mail attribute
+        let mail = commentEl.getAttribute('data-mail');
+        // try mailto link inside comment metadata
+        if (!mail) {
+          const mailA = commentEl.querySelector('a[href^="mailto:"]');
+          if (mailA) mail = mailA.getAttribute('href').replace(/^mailto:/i, '');
+        }
+        // try to find an element that stores mail in dataset
+        if (!mail) {
+          const mailNode = commentEl.querySelector('[data-mail]');
+          if (mailNode) mail = mailNode.dataset.mail;
+        }
+        const qq = getQQFromEmail(mail);
+        if (qq) {
+          const imgEl = commentEl.querySelector('.tk-avatar img, .tk-avatar-img, img');
+          if (imgEl) setQQAvatar(imgEl, qq);
+        }
       });
     }
 
-    // initial replace & also when new nodes added
-    setTimeout(() => replaceAllCravatars(document), 600);
-    setTimeout(() => replaceAllCravatars(document), 1800);
-
-    // integrate with MutationObserver used above: when nodes added, attempt replacement
-    const qqObserver = new MutationObserver((records) => {
-      records.forEach(rec => {
-        if(rec.addedNodes && rec.addedNodes.length){
-          rec.addedNodes.forEach(node => {
-            if(!(node instanceof Element)) return;
-            replaceAllCravatars(node);
-          });
-        }
-        if(rec.type === 'attributes' && rec.attributeName === 'src' && rec.target instanceof Element) {
-          // attribute src changed on some element
-          replaceAllCravatars(rec.target.parentElement || rec.target);
-        }
+    // initial attempt after comments render
+    setTimeout(applyAvatarFromEmailToComments, 600);
+    setTimeout(applyAvatarFromEmailToComments, 1500);
+    // reapply when DOM changes (comments added/updated)
+    const avatarObserver = new MutationObserver((recs) => {
+      let touched = false;
+      recs.forEach(r => {
+        if (r.addedNodes && r.addedNodes.length) touched = true;
+        if (r.type === 'attributes' && (r.attributeName === 'data-mail' || r.attributeName === 'href' || r.attributeName === 'src')) touched = true;
       });
+      if (touched) applyAvatarFromEmailToComments();
     });
-    qqObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
+    avatarObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-mail', 'href', 'src'] });
   });
 })();
