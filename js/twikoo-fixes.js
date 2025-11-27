@@ -12,6 +12,7 @@
       twikoo.init({
         envId: "https://twikoo.anbanyu.cn",   //
         el: "#twikoo-wrap",
+        avatar: "qq",
         lang: "zh-CN"
       });
     } catch (err) {
