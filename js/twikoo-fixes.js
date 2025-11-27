@@ -25,25 +25,36 @@
   //  Twikoo 运行时修复逻辑（你原来的全部内容）
   // -----------------------------
 
-  function setFallbackOnError(e){
-    const t = e.target;
-    if(t && t.tagName === 'IMG'){
-      try{
-        t.onerror = null;
-        t.src = '/img/friend_404.gif';
-      }catch(err){ /* ignore */ }
-    }
-  }
+function setFallbackOnError(e){
+  const t = e.target;
+  if(t && t.tagName === 'IMG'){
+    const src = t.src || '';
+    // ⛔ 不替换 QQ 头像（Twikoo avatar）
+    if (/qlogo\.cn/.test(src)) return;
 
-  function patchExistingImages(){
-    const wrap = document.getElementById('twikoo-wrap');
-    if(!wrap) return;
-    wrap.querySelectorAll('img').forEach(img => {
-      if(!img.complete || img.naturalWidth === 0){
-        img.src = '/img/friend_404.gif';
-      }
-    });
+    // 替换其他坏图
+    try{
+      t.onerror = null;
+      t.src = '/img/friend_404.gif';
+    }catch(err){ /* ignore */ }
   }
+}
+
+
+function patchExistingImages(){
+  const wrap = document.getElementById('twikoo-wrap');
+  if(!wrap) return;
+  wrap.querySelectorAll('img').forEach(img => {
+    const src = img.src || '';
+    // ⛔ 不改 QQ 头像
+    if (/qlogo\.cn/.test(src)) return;
+
+    if(!img.complete || img.naturalWidth === 0){
+      img.src = '/img/friend_404.gif';
+    }
+  });
+}
+
 
   document.addEventListener('DOMContentLoaded', () => {
     const wrap = document.getElementById('twikoo-wrap');
