@@ -145,7 +145,7 @@
             else if (isNotSpecified || hasNoSupport) {
               const now = new Date()
               const hour = now.getHours()
-              const isNight = hour <= 6 || hour >= 22
+              const isNight = hour <= 8 || hour >= 22
               isNight ? activateDarkMode() : activateLightMode()
             }
             window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {

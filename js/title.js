@@ -12,6 +12,6 @@ document.addEventListener('visibilitychange', function () {
     //两秒后变回正常标题
     titleTime = setTimeout(function () {
       document.title = OriginTitile;
-    }, 2000);
+    }, 3000);
   }
 });
