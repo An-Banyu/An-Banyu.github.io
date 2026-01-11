@@ -9,8 +9,7 @@
                 </div>
               
               <div class="loading-text">
-                  欢迎光临不夜天<br>
-                  loading...
+                  loading...<br>                
               </div>
               </div>
       </div>
