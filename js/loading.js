@@ -1,6 +1,4 @@
 (function() {
-  // 假设你把 SVG 内容保存为了 source/loading.svg
-  
   const loaderHTML = `
   <div id="loader-wrapper">
           <div class="loader-bg"></div>
@@ -19,9 +17,7 @@
 
   const loader = document.getElementById('loader-wrapper');
   const svgContainer = document.getElementById('svg-container');
-
-  // 【重要】请把你的那段长代码保存为 source/loading.svg 文件
-  // 然后这里我们去读取它
+  // 加载 SVG 文件内容
   fetch('/loading.svg') 
     .then(response => response.text())
     .then(svgText => {

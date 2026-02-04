@@ -8,11 +8,11 @@
 
   // 可在此数组中添加/替换图片 URL
   var bgList = [
-    'https://s2.loli.net/2025/10/05/QavDKncWM968tBq.jpg',
-    'https://s2.loli.net/2025/01/06/m4fjdBYCKPrwGJF.jpg',
-    'https://s2.loli.net/2025/10/07/2WQxn5iedh1C9k3.jpg',
-    'https://s2.loli.net/2025/10/07/XyZ9Uh5kjnxqrb7.jpg',
-    'https://s2.loli.net/2025/10/07/1EM89qO6BxXVwvt.jpg',
+    //'https://s2.loli.net/2025/10/05/QavDKncWM968tBq.jpg',
+    'https://s2.loli.net/2026/02/04/tuR3Y6kopajcKHz.jpg',
+    //'https://s2.loli.net/2025/10/07/2WQxn5iedh1C9k3.jpg',
+    //'https://s2.loli.net/2025/10/07/XyZ9Uh5kjnxqrb7.jpg',
+    //'https://s2.loli.net/2025/10/07/1EM89qO6BxXVwvt.jpg',
     // 在此添加更多图片地址，比如：
     // '/img/bg-1.jpg',
     // '/img/bg-2.jpg',

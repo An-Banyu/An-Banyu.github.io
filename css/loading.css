@@ -68,17 +68,9 @@ body.loaded::before {
     75% { opacity: 0.75; }
     100% { opacity: 1; }
 }
-/* #消失动画 
-#loader-wrapper.loaded .loader-bg { opacity: 0; }
-#loader-wrapper.loaded .loader-content { opacity: 0; transform: scale(1.1); }
-#loader-wrapper.loaded { visibility: hidden; transition: visibility 0s 0.6s; }
-#loader-wrapper.loading { visibility: visible; }
-#loader-wrapper.loading .loader-bg, 
-#loader-wrapper.loading .loader-content { opacity: 1; transform: none; }
-*/
 
 /* =========================================
-   加载完成后的“向上卷起”效果
+   加载完成后向上卷起
    ========================================= */
 
 /* 1. 先让中间的 Logo/SVG 快速淡出 */
