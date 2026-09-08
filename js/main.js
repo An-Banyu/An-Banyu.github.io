@@ -609,7 +609,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   document.getElementById('rightside').addEventListener('click', function (e) {
-    const $target = e.target.closest('[id]')
+    const $target = e.target.closest('button[id]')
     if ($target && rightSideFn[$target.id]) {
       rightSideFn[$target.id](this)
     }
