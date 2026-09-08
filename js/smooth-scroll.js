@@ -103,7 +103,7 @@
       if (wanted() && !engine) {
         engine = new Lenis({
           autoRaf: false,
-          duration: 0.3,
+          duration: 0.45,
           lerp: 0,
           easing: t => 1 - Math.pow(1 - t, 3),
           smoothWheel: true,
