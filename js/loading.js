@@ -2,6 +2,8 @@
   'use strict';
   var KEY = 'anbanyu.loader.lastShown.v2';
   var COOLDOWN = 60000;
+  var MIN_DISPLAY = 1500;
+  var shownAt = performance.now();
   var now = Date.now();
   var lastShown = 0;
   try { lastShown = Number(localStorage.getItem(KEY)) || 0; } catch (_) {}
@@ -30,6 +32,7 @@
     cancelAnimationFrame(frame);
     clearTimeout(deadline);
     clearTimeout(finishTimer);
+    clearTimeout(minimumTimer);
     request.abort();
     wrapper.remove();
     window.removeEventListener('load', finish);
@@ -37,7 +40,7 @@
 
   function revealFrame(time) {
     if (removed) return;
-    var batch = ending ? Math.max(50, Math.ceil(paths.length / 5)) : 50;
+    var batch = Math.max(50, Math.ceil(paths.length / (ending ? 5 : 36)));
     for (var count = 0; count < batch && cursor < paths.length; count++, cursor++) {
       paths[cursor].style.opacity = '1';
     }
@@ -50,17 +53,24 @@
 
   function finish() {
     if (ending || removed) return;
+    var remaining = MIN_DISPLAY - (performance.now() - shownAt);
+    if (!reduced && remaining > 0) {
+      clearTimeout(minimumTimer);
+      minimumTimer = setTimeout(finish, remaining);
+      return;
+    }
     ending = true;
     finishStarted = performance.now();
     wrapper.classList.add('finishing');
     cancelAnimationFrame(frame);
-    // The illustration never prolongs page readiness, even when its request fails.
+    // After the short viewing window, dismiss even if the illustration failed.
     if (reduced || !paths.length) wrapper.classList.add('loaded');
     else frame = requestAnimationFrame(revealFrame);
     finishTimer = setTimeout(remove, reduced ? 0 : 320);
   }
 
   var finishTimer;
+  var minimumTimer;
   var deadline = setTimeout(finish, 10000);
   window.addEventListener('load', finish, { once: true });
   window.addEventListener('pagehide', remove, { once: true });
