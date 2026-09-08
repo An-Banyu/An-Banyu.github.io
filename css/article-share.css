@@ -1,0 +1,7 @@
+.share-fallbacks { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+.share-fallbacks button { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; border: 1px solid var(--border-style-color, #b4c5ba); border-radius: 4px; background: transparent; color: inherit; font: inherit; font-size: 13px; cursor: pointer; }
+.share-fallbacks button[hidden] { display: none; }
+.share-feedback { font-size: 12px; }
+.post_share .social-share .icon-wechat .wechat-qrcode { width: 260px; height: auto; top: auto; bottom: calc(100% + 12px); left: 50%; transform: translateX(-50%); }
+.post_share .social-share .icon-wechat .wechat-qrcode .qrcode { width: fit-content; padding: 12px; margin: 0 auto; background: white; }
+.post_share .social-share .icon-wechat .wechat-qrcode .qrcode img { max-width: none; }
