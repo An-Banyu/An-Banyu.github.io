@@ -8,7 +8,7 @@
   /* 定义字体样式(斜体/非斜体) */
   font-style: normal;
   /* 定义显示样式 */
-  font-display: block;
+  font-display: swap;
 }
 
 :root {
@@ -355,5 +355,4 @@ div#archive {
   background-image: none !important; /* 去掉不必要的背景图 */
   box-sizing: border-box !important;
 }
-
 

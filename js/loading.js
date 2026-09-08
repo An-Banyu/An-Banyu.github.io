@@ -1,87 +1,90 @@
-(function() {
-  const loaderHTML = `
-  <div id="loader-wrapper">
-          <div class="loader-bg"></div>
-          <div class="loader-content">
-              <div id="svg-container" class="loading-svg">
-                </div>
-              
-              <div class="loading-text">
-                  loading...<br>                
-              </div>
-              </div>
-      </div>
-  `;
+(function () {
+  'use strict';
+  var KEY = 'anbanyu.loader.lastShown.v2';
+  var COOLDOWN = 60000;
+  var now = Date.now();
+  var lastShown = 0;
+  try { lastShown = Number(localStorage.getItem(KEY)) || 0; } catch (_) {}
+  // Cached pages and navigations within the cooldown reveal content immediately.
+  if (document.readyState === 'complete' || (lastShown > 0 && now >= lastShown && now - lastShown < COOLDOWN)) return;
+  try { localStorage.setItem(KEY, String(now)); } catch (_) {}
 
-  document.body.insertAdjacentHTML('afterbegin', loaderHTML);
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var wrapper = document.createElement('div');
+  wrapper.id = 'loader-wrapper';
+  wrapper.setAttribute('role', 'status');
+  wrapper.setAttribute('aria-label', '页面加载中');
+  wrapper.innerHTML = '<div class="loader-bg"></div><div class="loader-content"><div class="loading-svg" id="svg-container"></div><div class="loading-text">loading...</div></div>';
+  document.body.appendChild(wrapper);
+  var request = new AbortController();
+  var paths = [];
+  var cursor = 0;
+  var frame = 0;
+  var ending = false;
+  var removed = false;
+  var finishStarted = 0;
 
-  const loader = document.getElementById('loader-wrapper');
-  const svgContainer = document.getElementById('svg-container');
-  // 加载 SVG 文件内容
-  fetch('/loading.svg') 
-    .then(response => response.text())
-    .then(svgText => {
-        svgContainer.innerHTML = svgText;
-        
-        // 获取所有路径
-        const paths = svgContainer.querySelectorAll('path');
-        
-        // 动画逻辑：初始化所有碎片为透明
-        paths.forEach(p => {
-            p.style.opacity = 0;
-            p.style.transition = 'opacity 0.5s ease';
-        });
+  function remove() {
+    if (removed) return;
+    removed = true;
+    cancelAnimationFrame(frame);
+    clearTimeout(deadline);
+    clearTimeout(finishTimer);
+    request.abort();
+    wrapper.remove();
+    window.removeEventListener('load', finish);
+  }
 
-        // 随机顺序显示碎片
-        const totalPaths = paths.length;
-        const indices = Array.from({length: totalPaths}, (_, i) => i);
-        
-        // 打乱数组 (Fisher-Yates Shuffle)
-        for (let i = indices.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [indices[i], indices[j]] = [indices[j], indices[i]];
+  function revealFrame(time) {
+    if (removed) return;
+    var batch = ending ? Math.max(50, Math.ceil(paths.length / 5)) : 50;
+    for (var count = 0; count < batch && cursor < paths.length; count++, cursor++) {
+      paths[cursor].style.opacity = '1';
+    }
+    if (ending && (cursor === paths.length || time - finishStarted >= 120)) {
+      wrapper.classList.add('loaded');
+      return;
+    }
+    if (cursor < paths.length) frame = requestAnimationFrame(revealFrame);
+  }
+
+  function finish() {
+    if (ending || removed) return;
+    ending = true;
+    finishStarted = performance.now();
+    wrapper.classList.add('finishing');
+    cancelAnimationFrame(frame);
+    // The illustration never prolongs page readiness, even when its request fails.
+    if (reduced || !paths.length) wrapper.classList.add('loaded');
+    else frame = requestAnimationFrame(revealFrame);
+    finishTimer = setTimeout(remove, reduced ? 0 : 320);
+  }
+
+  var finishTimer;
+  var deadline = setTimeout(finish, 10000);
+  window.addEventListener('load', finish, { once: true });
+  window.addEventListener('pagehide', remove, { once: true });
+  if (document.readyState === 'complete') finish();
+
+  if (!reduced && !ending) {
+    fetch('/loading.svg', { signal: request.signal, priority: 'low' })
+      .then(function (response) {
+        if (!response.ok) throw new Error('Loading illustration unavailable');
+        return response.text();
+      })
+      .then(function (svg) {
+        if (ending || removed) return;
+        var parsed = new DOMParser().parseFromString(svg, 'image/svg+xml');
+        if (parsed.querySelector('parsererror')) return;
+        wrapper.querySelector('#svg-container').appendChild(document.importNode(parsed.documentElement, true));
+        paths = Array.from(wrapper.querySelectorAll('path'));
+        for (var i = paths.length - 1; i > 0; i--) {
+          var index = Math.floor(Math.random() * (i + 1));
+          var item = paths[i]; paths[i] = paths[index]; paths[index] = item;
         }
-
-        let i = 0;
-        const interval = setInterval(() => {
-            // 每次显示 50 个碎片
-            for(let k=0; k<50; k++) {
-                if(i >= totalPaths) {
-                    clearInterval(interval);
-                    break;
-                }
-                paths[indices[i]].style.opacity = 1;
-                i++;
-            }
-        }, 10); // 每 10ms 刷新一次
-    })
-    .catch(err => {
-        console.error("SVG 加载失败，请检查文件路径", err);
-        svgContainer.innerHTML = 'Loading...';
-    });
-
-
-  // 页面加载完成逻辑
-  window.addEventListener('load', function() {
-      // 稍微多等一会儿，让拼图拼完
-      setTimeout(function() {
-          loader.classList.add('loaded');
-          document.body.classList.add('loaded');
-      }, 2400); // 根据碎片显示速度调整这个时间
-  });
-
-  // PJAX 适配
-  document.addEventListener('pjax:send', function () {
-      loader.classList.remove('loaded');
-      document.body.classList.remove('loaded');
-      loader.classList.add('loading');
-  });
-  document.addEventListener('pjax:complete', function () {
-      setTimeout(function() {
-          loader.classList.remove('loading');
-          loader.classList.add('loaded');
-          document.body.classList.add('loaded');
-      }, 1000);
-  });
-
+        paths.forEach(function (path) { path.style.opacity = '0'; });
+        frame = requestAnimationFrame(revealFrame);
+      })
+      .catch(function () { /* Content readiness controls dismissal. */ });
+  }
 })();

@@ -105,13 +105,26 @@ function dark() {
     })();
   
     // 动画循环
-    (function t() {
-      // 检查当前主题是否为暗黑模式
-      document.getElementsByTagName('html')[0].getAttribute('data-theme') == 'dark' && u();
-      window.requestAnimationFrame(t);
-    })();
+    var frame = 0;
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    function animate() {
+      u();
+      frame = window.requestAnimationFrame(animate);
+    }
+    function updateAnimation() {
+      window.cancelAnimationFrame(frame);
+      if (!document.hidden && !reducedMotion.matches &&
+          document.documentElement.getAttribute('data-theme') === 'dark') {
+        frame = window.requestAnimationFrame(animate);
+      }
+    }
+    new MutationObserver(updateAnimation).observe(document.documentElement, {
+      attributes: true, attributeFilter: ['data-theme']
+    });
+    document.addEventListener('visibilitychange', updateAnimation);
+    reducedMotion.addEventListener('change', updateAnimation);
+    updateAnimation();
   }
   
   // 调用函数启动星光效果
   dark();
-  

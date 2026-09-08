@@ -1,0 +1,68 @@
+/* Shared reading surfaces; keep the existing photography and title font. */
+:root {
+  --trans-light: #fff;
+  --trans-dark: #202322;
+  --border-style: 1px solid #e0e5e2;
+  --backdrop-filter: none;
+}
+body { color: #303936; letter-spacing: 0; }
+#page-header.full_page { height: 64svh; min-height: 310px; max-height: 620px; }
+#page-header #site-info { padding: 0 24px; }
+#site-title { font-size: 48px; line-height: 1.3; }
+#site-subtitle { font-size: 17px; max-width: 660px; margin: 14px auto 0; line-height: 1.9; }
+#nav { height: 64px; padding-inline: 32px; }
+#nav #blog-info .site-name { font-size: 22px; }
+#nav .menus_items .menus_item { font-size: 15px; }
+#content-inner { max-width: 1260px; padding-top: 36px; gap: 28px; }
+#recent-posts > .recent-post-item {
+  border-radius: 8px; box-shadow: 0 4px 20px rgb(24 45 34 / 5%);
+  overflow: hidden; min-height: 260px;
+}
+#recent-posts > .recent-post-item > .recent-post-info { padding: 28px 32px; }
+#recent-posts > .recent-post-item > .recent-post-info > .article-title {
+  font-size: 24px; line-height: 1.55; -webkit-line-clamp: 3; overflow-wrap: anywhere;
+}
+#recent-posts > .recent-post-item > .recent-post-info > .article-meta-wrap {
+  font-size: 13px; margin-block: 10px 14px; color: #68756e;
+}
+#recent-posts > .recent-post-item > .recent-post-info > .content { font-size: 16px; line-height: 1.85; color: #536159; }
+.post_cover { aspect-ratio: 4 / 3; }
+.post_cover img { width: 100%; height: 100%; object-fit: cover; }
+#aside-content .card-widget { border-radius: 8px; box-shadow: none; }
+div#post, div#page, div#archive { border-radius: 0; border: 0; box-shadow: none; padding: 40px; }
+#article-container { font-size: 17px; line-height: 2; overflow-wrap: anywhere; }
+#article-container p { margin: 0 0 1.4em; }
+#article-container h2 { font-size: 28px; margin-block: 2em 0.8em; }
+#article-container h3 { font-size: 22px; margin-block: 1.7em 0.6em; }
+#article-container img { max-width: 100%; height: auto; border-radius: 6px; }
+#article-container blockquote { border-left-color: #4d7c70; background: #f1f6f3; padding: 18px 24px; }
+#article-container a:not(.fancybox) { text-underline-offset: 4px; }
+#article-container pre, #article-container figure.highlight { font-size: 14px; border-radius: 6px; }
+#post-info .post-title { font-size: 34px; line-height: 1.5; overflow-wrap: anywhere; }
+#post-info #post-meta { font-size: 14px; line-height: 1.8; }
+#footer { color: #fff; text-shadow: 0 1px 3px #222; }
+a:focus-visible, button:focus-visible { outline: 3px solid #528f81; outline-offset: 4px; }
+[data-theme="dark"] { --border-style: 1px solid #39433e; }
+[data-theme="dark"] body { color: #dde5df; }
+[data-theme="dark"] #recent-posts > .recent-post-item > .recent-post-info > .content { color: #c1ccc5; }
+[data-theme="dark"] #recent-posts > .recent-post-item > .recent-post-info > .article-meta-wrap { color: #a8b6ad; }
+[data-theme="dark"] #article-container blockquote { background: #29362f; color: #dae6de; }
+@media (max-width: 768px) {
+  #nav { padding-inline: 16px; height: 58px; }
+  #page-header.full_page { height: 58svh; min-height: 280px; }
+  #site-title { font-size: 38px; }
+  #site-subtitle { font-size: 15px; padding-inline: 10px; }
+  #content-inner { padding: 18px 12px; }
+  #recent-posts > .recent-post-item { height: auto; }
+  #recent-posts > .recent-post-item > .recent-post-info { padding: 22px; }
+  #recent-posts > .recent-post-item > .recent-post-info > .article-title { font-size: 22px; }
+  #recent-posts > .recent-post-item .post_cover { height: 200px; }
+  div#post, div#page, div#archive { padding: 24px 18px; }
+  #article-container { font-size: 16px; line-height: 1.95; }
+  #article-container h2 { font-size: 24px; }
+  #post-info .post-title { font-size: 27px; }
+  #article-container blockquote { padding: 14px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; transition: none !important; }
+}
