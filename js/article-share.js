@@ -47,6 +47,21 @@
         anchor.title = '分享到' + labels[site];
       });
       var section = container.closest('.post_share');
+      var wechat = container.querySelector('.icon-wechat');
+      if (wechat) {
+        var alignQr = function () {
+          var bubble = wechat.querySelector('.wechat-qrcode');
+          if (!bubble) return;
+          bubble.style.setProperty('--share-qr-shift', '0px');
+          var rect = bubble.getBoundingClientRect();
+          if (!rect.width) return;
+          var shift = rect.left < 8 ? 8 - rect.left : Math.min(0, document.documentElement.clientWidth - 8 - rect.right);
+          bubble.style.setProperty('--share-qr-shift', shift + 'px');
+        };
+        wechat.addEventListener('mouseenter', alignQr);
+        wechat.addEventListener('focusin', alignQr);
+        window.addEventListener('resize', alignQr);
+      }
       var feedback = section.querySelector('.share-feedback');
       section.querySelector('[data-copy-article]').addEventListener('click', async function () {
         try {
@@ -63,14 +78,6 @@
           feedback.textContent = '链接已复制';
         } catch (_) { feedback.textContent = '复制失败'; }
       });
-      var native = section.querySelector('[data-native-share]');
-      if (navigator.share) {
-        native.hidden = false;
-        native.addEventListener('click', async function () {
-          try { await navigator.share({ title: data.title, url: data.url }); }
-          catch (error) { if (error.name !== 'AbortError') feedback.textContent = '系统分享暂不可用'; }
-        });
-      }
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
