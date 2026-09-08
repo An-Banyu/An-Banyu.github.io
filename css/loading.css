@@ -13,8 +13,7 @@
 @keyframes loader-pulse { to { opacity: .4; } }
 #loader-wrapper.finishing .loading-svg path { transition-duration: 35ms; }
 #loader-wrapper.finishing .loading-text { animation-duration: 120ms; }
-#loader-wrapper.loaded .loader-content { opacity: 0; transition: opacity 100ms ease; }
-#loader-wrapper.loaded .loader-bg { transform: translateY(-100%); transition: transform 180ms ease-out; }
+#loader-wrapper.loaded { opacity: 0; transition: opacity 260ms ease-out; }
 @media (prefers-reduced-motion: reduce) {
   #loader-wrapper *, #loader-wrapper.loaded * { transition: none !important; animation: none !important; }
 }

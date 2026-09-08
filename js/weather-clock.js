@@ -110,7 +110,6 @@
       if (!active) return;
       city.textContent = location.city;
       locationNote.textContent = isDefault ? '默认城市' : 'IP 估算城市';
-      locationNote.title = isDefault ? 'IP 定位不可用，已显示默认城市' : '可能受 VPN、代理和运营商出口影响';
       if (!validLocation(location)) throw new Error('Invalid location');
       var cacheKey = 'anbanyu.weather.v1.' + location.latitude + '.' + location.longitude;
       var cached = !force && readCache(cacheKey);
