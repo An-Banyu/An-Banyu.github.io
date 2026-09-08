@@ -77,22 +77,28 @@
   if (document.readyState === 'complete') finish();
 
   if (!reduced && !ending) {
-    fetch('/loading.svg', { signal: request.signal, priority: 'low' })
+    function fetchIllustration(url) {
+      return fetch(url, { signal: request.signal, priority: 'low' })
       .then(function (response) {
         if (!response.ok) throw new Error('Loading illustration unavailable');
         return response.text();
+      });
+    }
+    fetchIllustration('/media/loading.optimized.svg?v=20260908-1')
+      .catch(function (error) {
+        if (removed || ending) throw error;
+        return fetchIllustration('/loading.svg');
       })
       .then(function (svg) {
         if (ending || removed) return;
         var parsed = new DOMParser().parseFromString(svg, 'image/svg+xml');
         if (parsed.querySelector('parsererror')) return;
-        wrapper.querySelector('#svg-container').appendChild(document.importNode(parsed.documentElement, true));
+        wrapper.querySelector('#svg-container').appendChild(parsed.documentElement);
         paths = Array.from(wrapper.querySelectorAll('path'));
         for (var i = paths.length - 1; i > 0; i--) {
           var index = Math.floor(Math.random() * (i + 1));
           var item = paths[i]; paths[i] = paths[index]; paths[index] = item;
         }
-        paths.forEach(function (path) { path.style.opacity = '0'; });
         frame = requestAnimationFrame(revealFrame);
       })
       .catch(function () { /* Content readiness controls dismissal. */ });

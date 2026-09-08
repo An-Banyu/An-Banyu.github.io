@@ -1,0 +1,8 @@
+/* Preserved full-font delivery for one-link rollback. */
+@font-face {
+  font-family: 'xiawu';
+  src: url('../font/霞鹜文楷.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
