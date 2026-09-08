@@ -10,7 +10,9 @@
   font-variant-numeric: tabular-nums; text-align: center; white-space: nowrap;
 }
 .weather-clock-current { font-size: 14px; align-items: baseline; }
-.weather-clock-city { font-weight: 600; }
+.weather-clock-city { font-weight: 600; min-width: 0; overflow-wrap: anywhere; flex: 1; }
+.weather-clock-location-note { min-height: 18px; font-size: 11px; color: #64736c; }
+.weather-clock-current [data-weather-summary] { flex: 1; }
 .weather-clock-current [data-weather-summary] { text-align: right; overflow-wrap: anywhere; }
 .weather-clock-details { min-height: 24px; margin-top: 6px; font-size: 12px; color: #64736c; }
 .weather-clock-footer { margin-top: 6px; font-size: 11px; }
@@ -22,6 +24,7 @@
 .weather-clock-footer button:disabled { opacity: .4; cursor: wait; }
 [data-theme='dark'] .weather-clock-time { color: #c3e9d5; }
 [data-theme='dark'] .weather-clock-heading,
+[data-theme='dark'] .weather-clock-location-note,
 [data-theme='dark'] .weather-clock-details,
 [data-theme='dark'] .weather-clock-footer a { color: #acbdb4; }
 [data-theme='dark'] .weather-clock-footer button { color: #b5dfc7; }
