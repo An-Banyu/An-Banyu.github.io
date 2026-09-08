@@ -137,7 +137,7 @@ div#archive {
   position: fixed; /* use fixed to avoid overflow clipping */
   display: none;
   width: auto;
-  max-width: 220px;
+  max-width: min(220px, calc(100vw - 16px));
   padding: 6px;
   background: rgba(0,0,0,0.85);
   border-radius: 8px;
@@ -157,22 +157,28 @@ div#archive {
 .social-tooltip img {
   display: block;
   width: 180px;
+  max-width: calc(100vw - 28px);
   height: auto;
   max-height: 240px;
   object-fit: contain;
   border-radius: 6px;
 }
 
-/* small arrow under tooltip */
+/* The arrow tracks the trigger when the tooltip flips or reaches a screen edge. */
 .social-tooltip::after {
   content: '';
   position: absolute;
-  left: 50%;
+  left: var(--social-arrow-x, 50%);
   transform: translateX(-50%);
   bottom: -6px;
   border-width: 6px 6px 0 6px;
   border-style: solid;
   border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+}
+.social-tooltip[data-placement='bottom']::after {
+  top: -6px; bottom: auto;
+  border-width: 0 6px 6px;
+  border-color: transparent transparent rgba(0,0,0,0.85);
 }
 /* 小冰分类分类磁铁黑夜模式适配 */
 /* 一般状态 */
@@ -355,4 +361,3 @@ div#archive {
   background-image: none !important; /* 去掉不必要的背景图 */
   box-sizing: border-box !important;
 }
-

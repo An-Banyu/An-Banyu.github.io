@@ -4,11 +4,13 @@
   if (!widget) return;
   var time = widget.querySelector('[data-clock-time]');
   var date = widget.querySelector('[data-clock-date]');
+  var year = widget.querySelector('[data-clock-year]');
+  var month = widget.querySelector('[data-clock-month]');
+  var day = widget.querySelector('[data-clock-day]');
   var summary = widget.querySelector('[data-weather-summary]');
   var details = widget.querySelector('[data-weather-details]');
   var refresh = widget.querySelector('[data-weather-refresh]');
   var city = widget.querySelector('[data-weather-city]');
-  var locationNote = widget.querySelector('[data-location-note]');
   var fallback = { latitude: Number(widget.dataset.latitude), longitude: Number(widget.dataset.longitude), city: widget.dataset.city };
   var LOCATION_KEY = 'anbanyu.ip-city.v1';
   var CACHE_TTL = 20 * 60 * 1000;
@@ -21,7 +23,10 @@
     var now = new Date();
     time.textContent = now.toLocaleTimeString('en-GB', { hour12: false });
     time.dateTime = now.toISOString();
-    date.textContent = now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' });
+    year.textContent = String(now.getFullYear());
+    month.textContent = String(now.getMonth() + 1);
+    day.textContent = String(now.getDate());
+    date.dateTime = year.textContent + '-' + month.textContent.padStart(2, '0') + '-' + day.textContent.padStart(2, '0');
   }
   function syncClock() {
     clearInterval(timer);
@@ -104,12 +109,10 @@
     details.textContent = '';
     try {
       var location;
-      var isDefault = false;
       try { location = await locate(force); }
-      catch (_) { location = fallback; isDefault = true; }
+      catch (_) { location = fallback; }
       if (!active) return;
       city.textContent = location.city;
-      locationNote.textContent = isDefault ? '默认城市' : 'IP 估算城市';
       if (!validLocation(location)) throw new Error('Invalid location');
       var cacheKey = 'anbanyu.weather.v1.' + location.latitude + '.' + location.longitude;
       var cached = !force && readCache(cacheKey);

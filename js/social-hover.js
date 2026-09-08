@@ -19,15 +19,20 @@
   }
 
   function positionTooltip(tooltip, iconRect, margin) {
+    var pad = 8;
+    var gap = margin || 10;
+    var above = iconRect.top - gap - pad;
+    var below = window.innerHeight - iconRect.bottom - gap - pad;
+    var image = tooltip.querySelector('img');
+    image.style.maxHeight = Math.max(0, Math.min(240, Math.max(above, below) - 12)) + 'px';
     var tw = tooltip.offsetWidth;
     var th = tooltip.offsetHeight;
-    var left = iconRect.left + iconRect.width / 2 - tw / 2;
-    var top = iconRect.top - th - (margin || 10);
-    // keep inside viewport
-    var pad = 8;
-    if (left < pad) left = pad;
-    if (left + tw > window.innerWidth - pad) left = window.innerWidth - tw - pad;
-    if (top < pad) top = iconRect.bottom + (margin || 10); // place below if not enough space above
+    var center = iconRect.left + iconRect.width / 2;
+    var left = Math.max(pad, Math.min(center - tw / 2, window.innerWidth - tw - pad));
+    var placement = th <= above || above >= below ? 'top' : 'bottom';
+    var top = placement === 'top' ? iconRect.top - th - gap : iconRect.bottom + gap;
+    tooltip.dataset.placement = placement;
+    tooltip.style.setProperty('--social-arrow-x', Math.max(8, Math.min(center - left, tw - 8)) + 'px');
     tooltip.style.left = left + 'px';
     tooltip.style.top = top + 'px';
   }
@@ -39,6 +44,25 @@
     var tooltip = createTooltip();
     var img = tooltip.querySelector('img');
     var activeTimer = null;
+    var showTimer = null;
+    var activeIcon = null;
+
+    function hideTooltip() {
+      clearTimeout(activeTimer);
+      clearTimeout(showTimer);
+      activeIcon = null;
+      tooltip.classList.remove('show');
+      tooltip.style.display = 'none';
+    }
+    function showActiveTooltip() {
+      if (!activeIcon || !img.complete || !img.naturalWidth) return;
+      positionTooltip(tooltip, activeIcon.getBoundingClientRect(), 8);
+      tooltip.classList.add('show');
+    }
+    img.addEventListener('load', showActiveTooltip);
+    img.addEventListener('error', hideTooltip);
+    window.addEventListener('scroll', hideTooltip, { passive: true });
+    window.addEventListener('resize', hideTooltip);
 
     // create a small copy-tip (bottom-right) for copy feedback
     var COPY_TIP_ID = 'social-copy-tip';
@@ -97,33 +121,25 @@
         if (isImageHref(href)) {
           icon.addEventListener('mouseenter', function (e) {
             if (activeTimer) { clearTimeout(activeTimer); activeTimer = null; }
+            clearTimeout(showTimer);
+            activeIcon = icon;
             img.src = href;
             tooltip.classList.remove('show');
             tooltip.style.display = 'block';
-            // wait a tick to allow image to load/size
-            // if image is cached, load event may not fire; we compute after small delay
-            setTimeout(function () {
-              positionTooltip(tooltip, icon.getBoundingClientRect(), 8);
-              tooltip.classList.add('show');
-            }, 40);
+            // Cached images need a scheduled check; new images reposition on load.
+            showTimer = setTimeout(showActiveTooltip, 40);
           }, {passive: true});
 
           icon.addEventListener('mouseleave', function () {
+            clearTimeout(showTimer);
             // small delay before hide to make hover less jittery
             activeTimer = setTimeout(function () {
+              activeIcon = null;
               tooltip.classList.remove('show');
-              activeTimer = setTimeout(function () { tooltip.style.display = 'none'; }, 180);
+              activeTimer = setTimeout(hideTooltip, 180);
             }, 80);
           });
         }
-
-        // also hide when scrolling or resizing (global handlers are safe to attach multiple times)
-        window.addEventListener('scroll', function () {
-          tooltip.classList.remove('show'); tooltip.style.display = 'none';
-        }, {passive: true});
-        window.addEventListener('resize', function () {
-          tooltip.classList.remove('show'); tooltip.style.display = 'none';
-        });
 
         // if this icon is a mailto: link, bind click to copy the email address
         if (href.indexOf('mailto:') === 0) {
