@@ -321,6 +321,9 @@ div#archive {
   }
 }
 
+.about-desc > p { margin: 0 0 1.25em; }
+.about-desc > p:last-child { margin-bottom: 0; }
+
 /* === Disable avatar hover rotation ===
    Some third-party CSS/animations in the theme rotate the avatar on hover.
    The following rules force avatar images to have no transform/animation on hover.
