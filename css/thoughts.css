@@ -4,8 +4,15 @@
 .thought-entry:first-child { padding-top: 4px; }
 .thought-entry header { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 13px; color: var(--font-color); opacity: .75; font-variant-numeric: tabular-nums; }
 .thought-entry header a { display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; }
-.thought-entry p { white-space: pre-wrap; overflow-wrap: anywhere; text-indent: 0; font-family: inherit; font-size: 17px; line-height: 1.95; margin: 12px 0 0; }
+.thought-plain { white-space: pre-wrap; overflow-wrap: anywhere; text-indent: 0; font-family: inherit; font-size: 17px; line-height: 1.95; margin: 12px 0 0; }
+.thought-prose { font-size: 17px; line-height: 2; overflow-wrap: anywhere; margin-top: 12px; }
+.thought-prose img { display: block; max-width: 100%; height: auto; border-radius: 8px; margin-inline: auto; }
+.thought-prose figure { max-width: 100%; }
+.thought-prose figcaption { font-size: 13px; text-align: center; opacity: .75; margin-top: 8px; }
+.thought-prose pre { max-width: 100%; overflow-x: auto; }
+.thought-prose table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.thought-prose td, .thought-prose th { padding: 6px 12px; border: 1px solid var(--hr-border); }
 .thoughts-empty { text-align: center; padding: 60px 0; color: var(--font-color); }
 .thoughts-pagination { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 24px; margin-top: 32px; font-size: 14px; }
 .thoughts-pagination a { display: inline-flex; gap: 8px; align-items: center; min-height: 40px; }
-@media (max-width: 600px) { .thought-entry { padding-block: 20px; } .thought-entry p { font-size: 16px; } }
+@media (max-width: 600px) { .thought-entry { padding-block: 20px; } .thought-plain, .thought-prose { font-size: 16px; } }
