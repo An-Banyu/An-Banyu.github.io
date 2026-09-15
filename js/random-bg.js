@@ -1,97 +1,58 @@
-/* random-bg.js
-   - 每次进入页面随机选择一张图集中的图片作为背景
-   - 预加载图片以避免闪烁
-   - 使用 localStorage 缓存当前索引，避免短时间内重复
-*/
+/* Keep a selection for one minute; load only the selected photo before applying it. */
 (function () {
   'use strict';
-
-  // 可在此数组中添加/替换图片 URL
-  var bgList = [
-    'https://s2.loli.net/2025/10/05/QavDKncWM968tBq.jpg',
+  if (window.anbanyuRandomBackground) return;
+  window.anbanyuRandomBackground = true;
+  var photos = [
+    null, // Responsive local copy of QavDKncWM968tBq.jpg.
     'https://s2.loli.net/2026/02/04/tuR3Y6kopajcKHz.jpg',
     'https://s2.loli.net/2025/10/07/2WQxn5iedh1C9k3.jpg',
     'https://s2.loli.net/2025/10/07/XyZ9Uh5kjnxqrb7.jpg',
-    'https://s2.loli.net/2025/10/07/1EM89qO6BxXVwvt.jpg',
-    // 在此添加更多图片地址，比如：
-    // '/img/bg-1.jpg',
-    // '/img/bg-2.jpg',
-    // 'https://example.com/other.jpg'
+    'https://s2.loli.net/2025/10/07/1EM89qO6BxXVwvt.jpg'
   ];
-
-  var STORAGE_KEY = 'site_random_bg_idx_v1';
-  var MIN_INTERVAL_MS = 1000 * 60 * 1; // 1 分钟内重复同一张
-
-  function pickIndex() {
-    if (!bgList || bgList.length === 0) return -1;
-    if (bgList.length === 1) return 0;
-
-    try {
-      var data = localStorage.getItem(STORAGE_KEY);
-      if (data) {
-        var obj = JSON.parse(data);
-        var lastIdx = obj.idx;
-        var lastTs = obj.ts;
-        var now = Date.now();
-        if (now - lastTs < MIN_INTERVAL_MS) {
-          // 在短时间内保持上一次选择
-          return lastIdx % bgList.length;
-        }
-      }
-    } catch (e) {
-      // ignore
+  var key = 'site_random_bg_idx_v2';
+  var selection, loadedUrl, request = 0;
+  function valid(value, now) {
+    return value && Number.isInteger(value.idx) && value.idx >= 0 && value.idx < photos.length &&
+      Number.isFinite(value.ts) && value.ts <= now;
+  }
+  function choose() {
+    var now = Date.now(), last = selection;
+    if (!last) {
+      try { last = JSON.parse(localStorage.getItem(key)); } catch (_) { /* Storage is optional. */ }
     }
-
-    // 随机选择，不等概率排除上一次
-    var idx = Math.floor(Math.random() * bgList.length);
-    return idx;
+    if (valid(last, now) && now - last.ts < 60000) return last;
+    var previous = valid(last, now) ? last.idx : -1;
+    var idx = Math.floor(Math.random() * (photos.length - (previous >= 0 ? 1 : 0)));
+    if (previous >= 0 && idx >= previous) idx++;
+    return { idx: idx, ts: now };
   }
-
-  function saveIndex(idx) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ idx: idx, ts: Date.now() }));
-    } catch (e) {
-      // ignore
-    }
+  function imageUrl(index) {
+    return photos[index] || '/media/site/background-' + (window.innerWidth <= 768 ? 1280 : window.innerWidth > 1920 ? 4096 : 2560) + '.webp';
   }
-
-  function preload(src, cb) {
-    var img = new Image();
-    img.onload = function () { cb && cb(null, img); };
-    img.onerror = function (err) { cb && cb(err); };
-    img.src = src;
+  function apply(url) {
+    var background = document.getElementById('web_bg');
+    if (background) background.style.backgroundImage = 'url("' + url + '")';
+    // Match the home banner, but leave article-specific covers untouched.
+    var header = document.getElementById('page-header');
+    if (header && header.classList.contains('full_page')) header.style.backgroundImage = 'url("' + url + '")';
   }
-
-  function applyBackground(url) {
-    var el = document.getElementById('web_bg');
-    if (!el) {
-      // fallback: apply to body
-      document.body.style.backgroundImage = 'url("' + url + '")';
-      document.body.classList.add('custom-bg-fallback');
-      return;
-    }
-    el.style.backgroundImage = 'url("' + url + '")';
-    el.style.backgroundRepeat = 'no-repeat';
-    el.style.backgroundPosition = 'center center';
-    el.style.backgroundSize = 'cover';
+  function run() {
+    var choice = choose(), url = imageUrl(choice.idx), ticket = ++request;
+    if (loadedUrl === url) { apply(url); return; }
+    var image = new Image(), settled = false;
+    var timer = setTimeout(function () { settled = true; image.onload = image.onerror = null; }, 8000);
+    image.onload = function () {
+      if (settled || ticket !== request) return;
+      settled = true; clearTimeout(timer);
+      selection = choice; loadedUrl = url;
+      try { localStorage.setItem(key, JSON.stringify(choice)); } catch (_) { /* Keep the in-memory choice. */ }
+      apply(url);
+    };
+    image.onerror = function () { settled = true; clearTimeout(timer); }; // Keep the existing local fallback.
+    image.src = url;
   }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    if (!bgList || bgList.length === 0) return;
-    var idx = pickIndex();
-    if (idx < 0) return;
-    var url = bgList[idx % bgList.length];
-
-    preload(url, function (err) {
-      if (!err) {
-        applyBackground(url);
-        saveIndex(idx);
-      } else {
-        // 如果预加载失败，仍尝试直接应用（浏览器会处理）
-        applyBackground(url);
-        saveIndex(idx);
-      }
-    });
-  });
-
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run, { once: true });
+  else run();
+  document.addEventListener('pjax:complete', run);
 })();
