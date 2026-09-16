@@ -13,6 +13,8 @@
 .thought-prose table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
 .thought-prose td, .thought-prose th { padding: 6px 12px; border: 1px solid var(--hr-border); }
 .thoughts-empty { text-align: center; padding: 60px 0; color: var(--font-color); }
+.thought-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+.thought-actions a { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding-inline: 8px; font-size: 14px; }
 .thoughts-pagination { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 24px; margin-top: 32px; font-size: 14px; }
 .thoughts-pagination a { display: inline-flex; gap: 8px; align-items: center; min-height: 40px; }
 @media (max-width: 600px) { .thought-entry { padding-block: 20px; } .thought-plain, .thought-prose { font-size: 16px; } }
