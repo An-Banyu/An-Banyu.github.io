@@ -1,0 +1,20 @@
+:is(#twikoo-wrap, #twikoo) .tk-row-actions-start > .tk-submit-action-icon:not(.OwO) { display: none !important; }
+.comment-image-button { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; font-size: 18px; }
+.comment-image-button:hover { color: var(--btn-bg, #49b1f5); }
+.comment-image-button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.comment-image-status { margin: 4px 0; font-size: 13px; }
+.comment-image-status:empty { display: none; }
+.comment-image-dialog { width: min(440px, calc(100% - 32px)); max-height: calc(100dvh - 32px); box-sizing: border-box; overflow-y: auto; border: 1px solid var(--hr-border, #ddd); border-radius: 8px; padding: 20px; background: var(--card-bg, #fff); color: var(--font-color, #222); font-family: inherit; }
+.comment-image-dialog::backdrop { background: rgb(0 0 0 / 45%); }
+.comment-image-dialog header, .comment-image-dialog footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.comment-image-dialog h2 { margin: 0; font-size: 18px; }
+.comment-image-dialog button { font-family: inherit; cursor: pointer; }
+.comment-image-dialog .image-close { border: 0; background: transparent; color: inherit; width: 32px; height: 32px; }
+.comment-image-dialog .image-preview { display: block; width: 100%; height: 180px; object-fit: contain; margin-top: 12px; }
+.comment-image-dialog p { font-size: 13px; overflow-wrap: anywhere; margin: 12px 0; }
+.comment-image-dialog .image-error { min-height: 20px; }
+.comment-image-dialog .image-result { box-sizing: border-box; width: 100%; margin-bottom: 12px; }
+.comment-image-dialog footer { justify-content: flex-end; }
+.comment-image-dialog footer button { border: 1px solid var(--hr-border, #ccc); border-radius: 4px; padding: 8px 14px; background: transparent; color: inherit; }
+.comment-image-dialog .image-upload { background: #167d7f; color: #fff; border-color: #167d7f; }
+.comment-image-dialog button:disabled { opacity: .5; cursor: default; }
