@@ -63,11 +63,12 @@
     const zoomValue = Number(mapSettings.zoom);
     const zoom = Number.isFinite(zoomValue) ? Math.min(18, Math.max(1, zoomValue)) : 4;
 
+    const fallback = container.querySelector('.photography-map-fallback');
     if (!window.L || typeof window.L.map !== 'function') {
-      const fallback = container.querySelector('.photography-map-fallback');
       if (fallback) fallback.textContent = '地图暂时无法加载，作品列表仍可正常浏览。';
       return;
     }
+    if (fallback) fallback.remove();
 
     const map = window.L.map(container, { scrollWheelZoom: false }).setView([latitude, longitude], zoom);
     window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
