@@ -1,0 +1,152 @@
+/* Photography page */
+.photography-page {
+  --photography-accent: #527a68;
+  --photography-border: rgba(82, 122, 104, .24);
+}
+
+.photography-intro {
+  margin-bottom: 1.5rem;
+  color: var(--font-color);
+  font-size: 1.05rem;
+}
+
+.photography-section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .75rem;
+  margin: 0 0 .75rem;
+  flex-wrap: wrap;
+}
+
+.photography-section-heading h2 {
+  margin: 0;
+  color: var(--photography-accent);
+  font-size: 1.35rem;
+}
+
+.photography-section-heading p {
+  margin: 0;
+  color: var(--second-text-color);
+  font-size: .9rem;
+}
+
+.photography-map-panel {
+  margin: 1.25rem 0 2rem;
+}
+
+#photography-map {
+  width: 100%;
+  min-height: 360px;
+  overflow: hidden;
+  border: 1px solid var(--photography-border);
+  border-radius: 14px;
+  background: #e6eef0;
+  z-index: 0;
+}
+
+.photography-map-fallback {
+  display: grid;
+  min-height: 360px;
+  place-items: center;
+  margin: 0;
+  color: #52666a;
+}
+
+.photography-map-attribution {
+  margin: .35rem 0 0;
+  color: var(--second-text-color);
+  font-size: .75rem;
+  text-align: right;
+}
+
+.photography-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 1rem;
+}
+
+.photography-card {
+  overflow: hidden;
+  border: 1px solid var(--photography-border);
+  border-radius: 14px;
+  background: var(--card-bg, rgba(255,255,255,.55));
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.photography-card:hover,
+.photography-card:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(33, 61, 52, .12);
+}
+
+.photography-card > a,
+.photography-card > a img {
+  display: block;
+  width: 100%;
+}
+
+.photography-card > a img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.photography-card-placeholder {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  color: var(--second-text-color);
+  background: rgba(82, 122, 104, .1);
+  font-size: 2rem;
+}
+
+.photography-card-body {
+  padding: .8rem .9rem 1rem;
+}
+
+.photography-card-body h3 {
+  margin: 0 0 .45rem;
+  font-size: 1.05rem;
+}
+
+.photography-card-meta {
+  display: flex;
+  gap: .35rem;
+  margin: 0 0 .45rem;
+  color: var(--second-text-color);
+  font-size: .82rem;
+}
+
+.photography-card-body > p:last-child {
+  margin: 0;
+  color: var(--font-color);
+  font-size: .9rem;
+}
+
+.photography-empty {
+  margin: 1.5rem 0;
+  padding: 2rem 1rem;
+  border: 1px dashed var(--photography-border);
+  border-radius: 14px;
+  color: var(--second-text-color);
+  text-align: center;
+}
+
+.photography-marker-label {
+  font-weight: 600;
+}
+
+[data-theme='dark'] .photography-card {
+  background: rgba(20, 25, 23, .7);
+}
+
+[data-theme='dark'] #photography-map {
+  background: #283533;
+}
+
+@media (max-width: 640px) {
+  #photography-map,
+  .photography-map-fallback {
+    min-height: 280px;
+  }
+}
