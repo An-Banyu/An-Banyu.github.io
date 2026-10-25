@@ -19,6 +19,20 @@ body { color: #303936; letter-spacing: 0; }
 #nav #search-button > .site-page > span,
 #nav .menus_items .menus_item > .site-page > i,
 #nav .menus_items .menus_item > .site-page > span { font-size: inherit; }
+/* Keep the main reading destinations centered while leaving utility links on the right. */
+#nav .nav-menu-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+#nav .nav-menu-center .menus_item { padding-left: 0; }
+#nav .nav-menu-secondary { display: inline-flex; align-items: center; }
 #content-inner { max-width: 1260px; padding-top: 36px; gap: 28px; }
 #recent-posts > .recent-post-item {
   border-radius: 8px; box-shadow: 0 4px 20px rgb(24 45 34 / 5%);

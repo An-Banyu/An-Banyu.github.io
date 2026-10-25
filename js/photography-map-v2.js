@@ -22,6 +22,31 @@
     return typeof value === 'string' && value.trim() ? value.trim() : fallback;
   }
 
+  // The standard OpenStreetMap tiles render their own (local-language) labels.
+  // Keep the Chinese suffix in our page data so it is deterministic and does
+  // not require a geocoding request from every visitor.
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function labelIcon(item) {
+    const local = text(item.local, '');
+    const chinese = text(item.zh, '');
+    if (!local && !chinese) return null;
+    const label = local && chinese ? `${local}（${chinese}）` : local || chinese;
+    return window.L.divIcon({
+      className: 'photography-map-label',
+      html: `<span class="photography-country-label" aria-label="${escapeHtml(label)}">${escapeHtml(label)}</span>`,
+      iconSize: null,
+      iconAnchor: [0, 0],
+    });
+  }
+
   function renderPopup(item) {
     const wrapper = document.createElement('div');
     wrapper.className = 'photography-marker-popup';
@@ -78,6 +103,25 @@
 
     const items = Array.isArray(data.items) ? data.items : [];
     const markers = new Map();
+
+    // Labels are deliberately data-driven.  This keeps the base map's local
+    // names intact while allowing a maintained Chinese suffix for countries
+    // or regions that have published photographs.
+    const labels = Array.isArray(mapSettings.labels) ? mapSettings.labels : [];
+    labels.forEach(item => {
+      if (!item || typeof item !== 'object') return;
+      const lat = numberInRange(item.lat, -90, 90);
+      const lng = numberInRange(item.lng, -180, 180);
+      const icon = labelIcon(item);
+      if (lat === null || lng === null || !icon) return;
+      window.L.marker([lat, lng], {
+        icon,
+        interactive: false,
+        keyboard: false,
+        zIndexOffset: -100,
+      }).addTo(map);
+    });
+
     items.forEach(item => {
       if (!item || typeof item !== 'object') return;
       const lat = numberInRange(item.lat, -90, 90);

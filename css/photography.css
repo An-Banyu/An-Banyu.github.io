@@ -136,6 +136,31 @@
   font-weight: 600;
 }
 
+/* Labels are rendered as transparent Leaflet divIcons over the raster tiles.
+ * The text shadow keeps both local and Chinese names legible on satellite
+ * colour variations without turning the labels into extra map controls. */
+.photography-map-label {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.photography-country-label {
+  display: inline-block;
+  color: #263c43;
+  font-size: .82rem;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  text-shadow: 0 0 2px #fff, 0 0 4px #fff;
+}
+
+[data-theme='dark'] .photography-country-label {
+  color: #f2fbf8;
+  text-shadow: 0 0 2px #1d2928, 0 0 4px #1d2928;
+}
+
 [data-theme='dark'] .photography-card {
   background: rgba(20, 25, 23, .7);
 }
