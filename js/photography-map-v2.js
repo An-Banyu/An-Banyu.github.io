@@ -22,28 +22,6 @@
     return typeof value === 'string' && value.trim() ? value.trim() : fallback;
   }
 
-  function escapeHtml(value) {
-    return String(value)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-
-  function countryLabelIcon(item) {
-    const local = text(item.local, '');
-    const chinese = text(item.zh, '');
-    if (!local && !chinese) return null;
-    const label = local && chinese && local !== chinese ? `${local}（${chinese}）` : local || chinese;
-    return window.L.divIcon({
-      className: 'photography-map-label',
-      html: `<span class="photography-country-label" aria-label="${escapeHtml(label)}">${escapeHtml(label)}</span>`,
-      iconSize: null,
-      iconAnchor: [0, 0],
-    });
-  }
-
   function renderPopup(item) {
     const wrapper = document.createElement('div');
     wrapper.className = 'photography-marker-popup';
@@ -100,26 +78,6 @@
 
     const items = Array.isArray(data.items) ? data.items : [];
     const markers = new Map();
-
-    // OpenStreetMap's raster labels cannot be translated at runtime.  Render
-    // a bundled, native-name + Chinese country layer above the tiles instead;
-    // it is deterministic and does not require a geocoding request per visit.
-    const labels = Array.isArray(window.PHOTOGRAPHY_COUNTRY_LABELS)
-      ? window.PHOTOGRAPHY_COUNTRY_LABELS
-      : [];
-    labels.forEach(item => {
-      if (!item || typeof item !== 'object') return;
-      const lat = numberInRange(item.lat, -90, 90);
-      const lng = numberInRange(item.lng, -180, 180);
-      const icon = countryLabelIcon(item);
-      if (lat === null || lng === null || !icon) return;
-      window.L.marker([lat, lng], {
-        icon,
-        interactive: false,
-        keyboard: false,
-        zIndexOffset: -100,
-      }).addTo(map);
-    });
 
     items.forEach(item => {
       if (!item || typeof item !== 'object') return;
