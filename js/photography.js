@@ -70,7 +70,7 @@
     }
     if (fallback) fallback.remove();
 
-    const map = window.L.map(container, { scrollWheelZoom: false }).setView([latitude, longitude], zoom);
+    const map = window.L.map(container, { scrollWheelZoom: true }).setView([latitude, longitude], zoom);
     window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a> contributors',
