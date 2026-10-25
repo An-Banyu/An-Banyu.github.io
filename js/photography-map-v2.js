@@ -22,9 +22,6 @@
     return typeof value === 'string' && value.trim() ? value.trim() : fallback;
   }
 
-  // The standard OpenStreetMap tiles render their own (local-language) labels.
-  // Keep the Chinese suffix in our page data so it is deterministic and does
-  // not require a geocoding request from every visitor.
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, '&amp;')
@@ -34,11 +31,11 @@
       .replace(/'/g, '&#39;');
   }
 
-  function labelIcon(item) {
+  function countryLabelIcon(item) {
     const local = text(item.local, '');
     const chinese = text(item.zh, '');
     if (!local && !chinese) return null;
-    const label = local && chinese ? `${local}（${chinese}）` : local || chinese;
+    const label = local && chinese && local !== chinese ? `${local}（${chinese}）` : local || chinese;
     return window.L.divIcon({
       className: 'photography-map-label',
       html: `<span class="photography-country-label" aria-label="${escapeHtml(label)}">${escapeHtml(label)}</span>`,
@@ -104,15 +101,17 @@
     const items = Array.isArray(data.items) ? data.items : [];
     const markers = new Map();
 
-    // Labels are deliberately data-driven.  This keeps the base map's local
-    // names intact while allowing a maintained Chinese suffix for countries
-    // or regions that have published photographs.
-    const labels = Array.isArray(mapSettings.labels) ? mapSettings.labels : [];
+    // OpenStreetMap's raster labels cannot be translated at runtime.  Render
+    // a bundled, native-name + Chinese country layer above the tiles instead;
+    // it is deterministic and does not require a geocoding request per visit.
+    const labels = Array.isArray(window.PHOTOGRAPHY_COUNTRY_LABELS)
+      ? window.PHOTOGRAPHY_COUNTRY_LABELS
+      : [];
     labels.forEach(item => {
       if (!item || typeof item !== 'object') return;
       const lat = numberInRange(item.lat, -90, 90);
       const lng = numberInRange(item.lng, -180, 180);
-      const icon = labelIcon(item);
+      const icon = countryLabelIcon(item);
       if (lat === null || lng === null || !icon) return;
       window.L.marker([lat, lng], {
         icon,
