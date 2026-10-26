@@ -76,6 +76,8 @@
   break-inside: avoid;
   page-break-inside: avoid;
   vertical-align: top;
+  content-visibility: auto;
+  contain-intrinsic-size: 320px;
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
