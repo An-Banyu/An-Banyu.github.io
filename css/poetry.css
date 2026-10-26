@@ -91,14 +91,13 @@
   pointer-events: none;
 }
 
-/* Multiply lets the white pixels of the avatar blend into the paper while the
-   monochrome filter gives the mark a black ink stamp appearance. */
+/* The PNG already contains only black ink with transparent background. */
 .poetry-personal-marker.poetry-stamp {
   padding: 0;
   background: transparent;
   mix-blend-mode: multiply;
-  filter: grayscale(1) contrast(1.9) brightness(.72);
-  opacity: .88;
+  filter: none;
+  opacity: 1;
 }
 
 .poetry-card-placeholder {
