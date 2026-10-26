@@ -78,15 +78,6 @@
   mix-blend-mode: multiply;
 }
 
-.poetry-original-link {
-  display: inline-flex;
-  align-items: center;
-  gap: .3rem;
-  margin-top: .65rem;
-  color: var(--poetry-accent);
-  font-size: .82rem;
-}
-
 .poetry-personal-marker {
   position: absolute;
   z-index: 1;
@@ -94,20 +85,20 @@
   height: auto;
   border: 0;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(145, 39, 42, .48), 0 2px 7px rgba(68, 24, 24, .22);
+  box-shadow: 0 0 0 2px rgba(24, 24, 24, .72), 0 2px 7px rgba(0, 0, 0, .22);
   object-fit: cover;
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
-/* Multiply removes the white paper around the avatar visually. The filter
-   gives the mark a single ink-red tone and stronger stamp contrast. */
+/* Multiply lets the white pixels of the avatar blend into the paper while the
+   monochrome filter gives the mark a black ink stamp appearance. */
 .poetry-personal-marker.poetry-stamp {
   padding: 3px;
   background: transparent;
   mix-blend-mode: multiply;
-  filter: grayscale(1) contrast(1.85) sepia(1) saturate(7) hue-rotate(305deg);
-  opacity: .86;
+  filter: grayscale(1) contrast(1.9) brightness(.72);
+  opacity: .88;
 }
 
 .poetry-card-placeholder {
