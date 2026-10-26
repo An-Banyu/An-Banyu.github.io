@@ -5,19 +5,25 @@
   var MIN_DISPLAY = 1500;
   var shownAt = performance.now();
   var now = Date.now();
+  var existingWrapper = document.getElementById('loader-wrapper');
   var lastShown = 0;
   try { lastShown = Number(localStorage.getItem(KEY)) || 0; } catch (_) {}
   // Cached pages and navigations within the cooldown reveal content immediately.
-  if (document.readyState === 'complete' || (lastShown > 0 && now >= lastShown && now - lastShown < COOLDOWN)) return;
+  if (document.readyState === 'complete' || (lastShown > 0 && now >= lastShown && now - lastShown < COOLDOWN)) {
+    if (existingWrapper) existingWrapper.remove();
+    return;
+  }
   try { localStorage.setItem(KEY, String(now)); } catch (_) {}
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var wrapper = document.createElement('div');
-  wrapper.id = 'loader-wrapper';
-  wrapper.setAttribute('role', 'status');
-  wrapper.setAttribute('aria-label', '页面加载中');
-  wrapper.innerHTML = '<div class="loader-bg"></div><div class="loader-content"><div class="loading-svg" id="svg-container"></div><div class="loading-text">loading...</div></div>';
-  document.body.appendChild(wrapper);
+  var wrapper = existingWrapper || document.createElement('div');
+  if (!existingWrapper) {
+    wrapper.id = 'loader-wrapper';
+    wrapper.setAttribute('role', 'status');
+    wrapper.setAttribute('aria-label', '页面加载中');
+    wrapper.innerHTML = '<div class="loader-bg"></div><div class="loader-content"><div class="loading-svg" id="svg-container"></div><div class="loading-text">loading...</div></div>';
+    document.body.appendChild(wrapper);
+  }
   var request = new AbortController();
   var paths = [];
   var cursor = 0;
