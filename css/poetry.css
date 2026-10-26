@@ -92,12 +92,22 @@
   z-index: 1;
   max-width: 36%;
   height: auto;
-  border: 2px solid rgba(255, 255, 255, .9);
+  border: 0;
   border-radius: 50%;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, .22);
+  box-shadow: 0 0 0 2px rgba(145, 39, 42, .48), 0 2px 7px rgba(68, 24, 24, .22);
   object-fit: cover;
   transform: translate(-50%, -50%);
   pointer-events: none;
+}
+
+/* Multiply removes the white paper around the avatar visually. The filter
+   gives the mark a single ink-red tone and stronger stamp contrast. */
+.poetry-personal-marker.poetry-stamp {
+  padding: 3px;
+  background: transparent;
+  mix-blend-mode: multiply;
+  filter: grayscale(1) contrast(1.85) sepia(1) saturate(7) hue-rotate(305deg);
+  opacity: .86;
 }
 
 .poetry-card-placeholder {
