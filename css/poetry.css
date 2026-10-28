@@ -93,7 +93,7 @@
 }
 
 .poetry-card-body {
-  padding: .8rem .9rem 1rem;
+  padding: .16rem .9rem 1rem;
 }
 
 .poetry-card-body h3 {
@@ -123,7 +123,7 @@
 }
 
 .poetry-description p + p {
-  margin-top: .5em;
+  margin-top: 0;
 }
 
 .poetry-empty {
