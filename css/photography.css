@@ -86,13 +86,14 @@
 }
 
 .photography-card > a,
-.photography-card > a img {
+#article-container .photography-card > a img {
   display: block;
   width: 100%;
 }
 
-.photography-card > a img {
+#article-container .photography-card > a img {
   height: auto;
+  margin: 0;
   object-fit: contain;
 }
 
@@ -109,12 +110,12 @@
   padding: .16rem .9rem 1rem;
 }
 
-.photography-card-body h3 {
+#article-container .photography-card-body h3 {
   margin: 0 0 .45rem;
   font-size: 1.05rem;
 }
 
-.photography-card-meta {
+#article-container .photography-card-meta {
   display: flex;
   gap: .35rem;
   margin: 0 0 .45rem;
@@ -122,7 +123,7 @@
   font-size: .82rem;
 }
 
-.photography-card-body > p:last-child {
+#article-container .photography-card-body > p:last-child {
   margin: 0;
   color: var(--font-color);
   font-size: .9rem;

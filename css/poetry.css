@@ -52,17 +52,19 @@
   text-align: left;
 }
 
-.poetry-manuscript-image {
+#article-container .poetry-manuscript-image {
   display: block;
   width: 100%;
   height: auto;
+  margin: 0;
   object-fit: contain;
   mix-blend-mode: multiply;
 }
 
-.poetry-personal-marker {
+#article-container .poetry-personal-marker {
   position: absolute;
   z-index: 1;
+  margin: 0;
   max-width: 36%;
   height: auto;
   border: 0;
@@ -96,7 +98,7 @@
   padding: .16rem .9rem 1rem;
 }
 
-.poetry-card-body h3 {
+#article-container .poetry-card-body h3 {
   margin: 0 0 .45rem;
   color: var(--poetry-ink);
   font-size: 1.05rem;
@@ -116,13 +118,13 @@
   line-height: 1.7;
 }
 
-.poetry-description p {
+#article-container .poetry-description p {
   margin: 0;
   text-indent: 2em;
   white-space: pre-wrap;
 }
 
-.poetry-description p + p {
+#article-container .poetry-description p + p {
   margin-top: 0;
 }
 
