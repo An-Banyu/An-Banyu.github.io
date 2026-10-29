@@ -10,6 +10,34 @@
   font-size: 1.05rem;
 }
 
+.photography-subnav {
+  display: flex;
+  gap: .35rem;
+  margin: 0 0 1rem;
+  padding: .25rem;
+  border: 1px solid var(--photography-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card-bg, #fff) 72%, transparent);
+  width: fit-content;
+}
+
+.photography-subnav a {
+  display: inline-block;
+  padding: .35rem .85rem;
+  border-radius: 999px;
+  color: var(--second-text-color);
+  font-size: .9rem;
+  text-decoration: none;
+  transition: color .2s ease, background-color .2s ease;
+}
+
+.photography-subnav a:hover,
+.photography-subnav a:focus-visible,
+.photography-subnav a.is-active {
+  color: var(--photography-accent);
+  background: rgba(82, 122, 104, .13);
+}
+
 .photography-section-heading {
   display: flex;
   align-items: baseline;
