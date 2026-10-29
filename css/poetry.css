@@ -124,6 +124,21 @@
   font-size: .82rem;
 }
 
+.poetry-illustration-link {
+  display: block;
+  margin: .35rem 0 .65rem;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+#article-container .poetry-illustration-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  object-fit: contain;
+}
+
 .poetry-description {
   margin: 0;
   color: var(--font-color);
