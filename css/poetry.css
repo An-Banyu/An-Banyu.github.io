@@ -1,0 +1,240 @@
+/* Handwritten poetry archive */
+.poetry-page {
+  --poetry-accent: #527a68;
+  --poetry-border: rgba(82, 122, 104, .24);
+  --poetry-paper: #f5f0e6;
+  --poetry-ink: #303b35;
+}
+
+.poetry-intro {
+  margin-bottom: 1.5rem;
+  color: var(--font-color);
+  font-size: 1.05rem;
+}
+
+.poetry-grid {
+  /* Keep the column-count declaration as a graceful fallback for older browsers. */
+  column-count: 3;
+  column-gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(var(--poetry-columns-desktop, 3), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--poetry-rows-desktop, 1), max-content);
+  grid-auto-flow: column;
+  gap: 1rem;
+  align-items: start;
+}
+
+/* Keep this class for the short-archive template path; the shared grid now uses
+ * the same column-first flow for every archive length. */
+.poetry-grid.is-compact {
+  display: grid;
+  grid-template-columns: repeat(var(--poetry-columns-desktop, 3), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--poetry-rows-desktop, 1), max-content);
+  grid-auto-flow: column;
+  column-count: initial;
+}
+
+.poetry-grid.is-compact .poetry-card {
+  display: block;
+}
+
+/* Use a balanced multi-column flow when it is available. Unlike fixed grid
+ * rows, columns keep each card directly below the previous card in that
+ * column, so a long description cannot create a large horizontal gap beside
+ * a short card. The grid declarations above remain the fallback. */
+@supports (column-width: 1px) {
+  .poetry-grid,
+  .poetry-grid.is-compact {
+    display: block;
+    column-count: var(--poetry-columns-desktop, 3);
+    column-gap: 1rem;
+    column-fill: balance;
+    grid-template-columns: none;
+    grid-template-rows: none;
+  }
+
+  .poetry-grid.is-compact {
+    column-count: var(--poetry-columns-desktop, 3);
+  }
+
+  .poetry-grid .poetry-card,
+  .poetry-grid.is-compact .poetry-card {
+    display: inline-block;
+    width: 100%;
+    margin: 0 0 1rem;
+  }
+}
+
+.poetry-card {
+  display: block;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--poetry-border);
+  border-radius: 14px;
+  background: var(--card-bg, rgba(255, 255, 255, .55));
+  break-inside: avoid;
+  page-break-inside: avoid;
+  vertical-align: top;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.poetry-card:hover,
+.poetry-card:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(33, 61, 52, .12);
+}
+
+.poetry-card-frame {
+  position: relative;
+  display: block;
+  min-height: 0;
+  padding: 0;
+  background: var(--poetry-paper);
+}
+
+.poetry-image-link {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+#article-container .poetry-manuscript-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+#article-container .poetry-personal-marker {
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  max-width: 36%;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* The PNG already contains only black ink with transparent background. */
+.poetry-personal-marker.poetry-stamp {
+  padding: 0;
+  background: transparent;
+  mix-blend-mode: multiply;
+  filter: none;
+  opacity: 1;
+}
+
+.poetry-card-placeholder {
+  display: grid;
+  min-height: 180px;
+  width: 100%;
+  place-items: center;
+  color: var(--second-text-color);
+  background: rgba(82, 122, 104, .1);
+  font-size: 2rem;
+}
+
+.poetry-card-body {
+  padding: .16rem .9rem 1rem;
+}
+
+#article-container .poetry-card-body h3 {
+  margin: 0 0 .45rem;
+  color: var(--poetry-ink);
+  font-size: 1.05rem;
+}
+
+.poetry-date {
+  display: block;
+  margin-bottom: .45rem;
+  color: var(--second-text-color);
+  font-size: .82rem;
+}
+
+.poetry-illustration-link {
+  display: block;
+  margin: .35rem 0 .65rem;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+#article-container .poetry-illustration-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  object-fit: contain;
+}
+
+.poetry-description {
+  margin: 0;
+  color: var(--font-color);
+  font-size: .9rem;
+  line-height: 1.7;
+}
+
+#article-container .poetry-description p {
+  margin: 0;
+  text-indent: 2em;
+  white-space: pre-wrap;
+}
+
+#article-container .poetry-description p + p {
+  margin-top: 0;
+}
+
+.poetry-empty {
+  margin: 1.5rem 0;
+  padding: 2rem 1rem;
+  border: 1px dashed var(--poetry-border);
+  border-radius: 14px;
+  color: var(--second-text-color);
+  text-align: center;
+}
+
+[data-theme='dark'] .poetry-card {
+  background: rgba(20, 25, 23, .7);
+}
+
+[data-theme='dark'] .poetry-card-frame {
+  --poetry-paper: #e8e1d4;
+}
+
+@media (max-width: 640px) {
+  .poetry-grid,
+  .poetry-grid.is-compact {
+    column-count: var(--poetry-columns-tablet, 2);
+    column-gap: .75rem;
+    grid-template-columns: repeat(var(--poetry-columns-tablet, 2), minmax(0, 1fr));
+    grid-template-rows: repeat(var(--poetry-rows-tablet, 1), max-content);
+    gap: .75rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .poetry-grid,
+  .poetry-grid.is-compact {
+    column-count: var(--poetry-columns-mobile, 1);
+    column-gap: .75rem;
+    grid-template-columns: repeat(var(--poetry-columns-mobile, 1), minmax(0, 1fr));
+    grid-template-rows: repeat(var(--poetry-rows-mobile, 1), max-content);
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1100px) {
+  .poetry-grid,
+  .poetry-grid.is-compact {
+    column-count: var(--poetry-columns-tablet, 2);
+    column-gap: .75rem;
+    grid-template-columns: repeat(var(--poetry-columns-tablet, 2), minmax(0, 1fr));
+    grid-template-rows: repeat(var(--poetry-rows-tablet, 1), max-content);
+  }
+}
