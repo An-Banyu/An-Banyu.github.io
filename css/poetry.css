@@ -13,16 +13,24 @@
 }
 
 .poetry-grid {
+  /* Keep the column-count declaration as a graceful fallback for older browsers. */
   column-count: 3;
   column-gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(var(--poetry-rows-desktop, 1), max-content);
+  grid-auto-flow: column;
+  gap: 1rem;
+  align-items: start;
 }
 
-/* Very short archives should still use the available columns when one card is tall. */
+/* Keep this class for the short-archive template path; the shared grid now uses
+ * the same column-first flow for every archive length. */
 .poetry-grid.is-compact {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  align-items: start;
+  grid-template-rows: repeat(var(--poetry-rows-desktop, 1), max-content);
+  grid-auto-flow: column;
   column-count: initial;
 }
 
@@ -31,9 +39,9 @@
 }
 
 .poetry-card {
-  display: inline-block;
+  display: block;
   width: 100%;
-  margin: 0 0 1rem;
+  margin: 0;
   overflow: hidden;
   border: 1px solid var(--poetry-border);
   border-radius: 14px;
@@ -177,10 +185,14 @@
   .poetry-grid {
     column-count: 2;
     column-gap: .75rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(var(--poetry-rows-tablet, 1), max-content);
+    gap: .75rem;
   }
 
   .poetry-grid.is-compact {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(var(--poetry-rows-tablet, 1), max-content);
     gap: .75rem;
   }
 }
@@ -188,15 +200,25 @@
 @media (max-width: 520px) {
   .poetry-grid {
     column-count: 1;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(var(--poetry-rows-mobile, 1), max-content);
   }
 
   .poetry-grid.is-compact {
     grid-template-columns: 1fr;
+    grid-template-rows: repeat(var(--poetry-rows-mobile, 1), max-content);
   }
 }
 
 @media (min-width: 641px) and (max-width: 1100px) {
   .poetry-grid {
     column-count: 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(var(--poetry-rows-tablet, 1), max-content);
+  }
+
+  .poetry-grid.is-compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(var(--poetry-rows-tablet, 1), max-content);
   }
 }
