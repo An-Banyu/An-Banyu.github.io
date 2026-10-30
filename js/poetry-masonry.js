@@ -27,7 +27,7 @@
 
   function shortestColumn(columns) {
     return columns.reduce(function (shortest, column) {
-      return column.offsetHeight < shortest.offsetHeight ? column : shortest;
+      return column.scrollHeight < shortest.scrollHeight ? column : shortest;
     }, columns[0]);
   }
 
@@ -66,11 +66,14 @@
   }
 
   function schedule(grid, force) {
+    if (force) grid.dataset.poetryLayoutForce = 'true';
     if (grid.dataset.poetryLayoutPending === 'true') return;
     grid.dataset.poetryLayoutPending = 'true';
     window.requestAnimationFrame(function () {
       grid.dataset.poetryLayoutPending = 'false';
-      layout(grid, force);
+      var shouldForce = grid.dataset.poetryLayoutForce === 'true';
+      delete grid.dataset.poetryLayoutForce;
+      layout(grid, shouldForce);
     });
   }
 
@@ -81,6 +84,10 @@
     Array.prototype.forEach.call(grid.querySelectorAll('img'), function (image) {
       image.addEventListener('load', function () { schedule(grid, true); });
     });
+    window.addEventListener('load', function () { schedule(grid, true); }, { once: true });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { schedule(grid, true); });
+    }
     window.addEventListener('resize', function () { schedule(grid, false); }, { passive: true });
     if (window.ResizeObserver) {
       var observer = new ResizeObserver(function () { schedule(grid, false); });

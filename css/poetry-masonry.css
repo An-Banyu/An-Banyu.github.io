@@ -254,6 +254,8 @@
 
 .poetry-grid.poetry-grid--balanced .poetry-column {
   display: flex;
+  align-self: start;
+  height: fit-content;
   min-width: 0;
   flex-direction: column;
   gap: 1rem;
