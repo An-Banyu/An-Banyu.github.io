@@ -238,3 +238,45 @@
     grid-template-rows: repeat(var(--poetry-rows-desktop, 1), max-content);
   }
 }
+
+/* Once JavaScript is available, place each card into the currently shortest
+ * column. The CSS multi-column layout above remains the no-script fallback. */
+.poetry-grid.poetry-grid--balanced {
+  display: grid;
+  column-count: initial;
+  column-gap: 0;
+  grid-template-columns: repeat(var(--poetry-effective-columns, 3), minmax(0, 1fr));
+  grid-template-rows: none;
+  grid-auto-flow: initial;
+  gap: 1rem;
+  align-items: start;
+}
+
+.poetry-grid.poetry-grid--balanced .poetry-column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.poetry-grid.poetry-grid--balanced .poetry-card {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .poetry-grid.poetry-grid--balanced {
+    gap: .75rem;
+  }
+
+  .poetry-grid.poetry-grid--balanced .poetry-column {
+    gap: .75rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .poetry-grid.poetry-grid--balanced {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
