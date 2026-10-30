@@ -232,9 +232,9 @@
 @media (min-width: 641px) and (max-width: 1100px) {
   .poetry-grid,
   .poetry-grid.is-compact {
-    column-count: var(--poetry-columns-tablet, 2);
+    column-count: var(--poetry-columns-desktop, 3);
     column-gap: .75rem;
-    grid-template-columns: repeat(var(--poetry-columns-tablet, 2), minmax(0, 1fr));
-    grid-template-rows: repeat(var(--poetry-rows-tablet, 1), max-content);
+    grid-template-columns: repeat(var(--poetry-columns-desktop, 3), minmax(0, 1fr));
+    grid-template-rows: repeat(var(--poetry-rows-desktop, 1), max-content);
   }
 }
