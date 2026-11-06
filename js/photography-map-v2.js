@@ -51,33 +51,10 @@
     return wrapper;
   }
 
-  const tileSources = [
-    {
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      options: {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a> contributors',
-        maxZoom: 19,
-      },
-    },
-    {
-      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-      options: {
-        attribution: 'Tiles &copy; Esri',
-        maxZoom: 19,
-      },
-    },
-    {
-      url: 'https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png',
-      options: {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a> contributors',
-        maxZoom: 19,
-      },
-    },
-  ];
-
   function initPhotography() {
     const container = document.getElementById('photography-map');
     if (!container || container.dataset.initialized === 'true') return;
+    container.dataset.initialized = 'true';
     const data = readData() || {};
     const mapSettings = data.map && typeof data.map === 'object' ? data.map : {};
     const center = Array.isArray(mapSettings.center) ? mapSettings.center : [];
@@ -91,103 +68,13 @@
       if (fallback) fallback.textContent = '地图暂时无法加载，作品列表仍可正常浏览。';
       return;
     }
-    container.dataset.initialized = 'true';
     if (fallback) fallback.remove();
 
-    const map = window.L.map(container, {
-      scrollWheelZoom: true,
-      preferCanvas: true,
-      updateWhenIdle: true,
-      updateWhenZooming: false,
-    }).setView([latitude, longitude], zoom);
-
-    let activeTileLayer = null;
-    let tileSourceIndex = -1;
-    let fallbackTimer = null;
-    let errorTimer = null;
-    const tileStatus = document.createElement('p');
-    tileStatus.className = 'photography-map-status';
-    tileStatus.setAttribute('role', 'status');
-    tileStatus.setAttribute('aria-live', 'polite');
-    tileStatus.textContent = '地图底图加载中……';
-    container.appendChild(tileStatus);
-
-    const mountTileSource = index => {
-      const source = tileSources[index];
-      if (!source) {
-        if (fallback) fallback.textContent = '地图底图暂时无法加载，作品列表仍可正常浏览。';
-        tileStatus.textContent = '地图底图加载失败';
-        tileStatus.hidden = false;
-        return;
-      }
-
-      tileSourceIndex = index;
-      tileStatus.hidden = false;
-      tileStatus.textContent = '地图底图加载中……';
-      let startedTiles = 0;
-      let loadedTiles = 0;
-      let failedTiles = 0;
-      let switched = false;
-      const layer = window.L.tileLayer(source.url, {
-        ...source.options,
-        keepBuffer: 2,
-        updateWhenIdle: true,
-        updateWhenZooming: false,
-      });
-
-      const switchToNextSource = () => {
-        if (switched || tileSourceIndex !== index) return;
-        switched = true;
-        if (fallbackTimer) window.clearTimeout(fallbackTimer);
-        if (errorTimer) window.clearTimeout(errorTimer);
-        map.removeLayer(layer);
-        if (tileSources[index + 1]) {
-          tileStatus.textContent = '当前底图响应较慢，正在切换备用底图……';
-          mountTileSource(index + 1);
-        } else {
-          tileStatus.textContent = '地图底图加载失败';
-        }
-      };
-
-      const hasTooManyErrors = () => startedTiles >= 6 && failedTiles >= 3 && failedTiles >= Math.ceil(startedTiles * .25);
-      const scheduleErrorCheck = () => {
-        if (errorTimer || switched) return;
-        errorTimer = window.setTimeout(() => {
-          errorTimer = null;
-          if (hasTooManyErrors()) switchToNextSource();
-        }, 2500);
-      };
-
-      layer.on('tileloadstart', () => {
-        startedTiles += 1;
-      });
-      layer.on('tileload', () => {
-        loadedTiles += 1;
-        if (tileSourceIndex === index && loadedTiles > 0) {
-          tileStatus.textContent = '';
-          tileStatus.hidden = true;
-        }
-      });
-      layer.on('tileerror', () => {
-        failedTiles += 1;
-        scheduleErrorCheck();
-      });
-      layer.addTo(map);
-      fallbackTimer = window.setTimeout(() => {
-        if (loadedTiles === 0 || hasTooManyErrors()) switchToNextSource();
-      }, 6000);
-      activeTileLayer = layer;
-    };
-
-    mountTileSource(0);
-    const refreshMapSize = () => {
-      window.requestAnimationFrame(() => map.invalidateSize({ pan: false }));
-    };
-    map.whenReady(refreshMapSize);
-    map.on('load', refreshMapSize);
-    window.addEventListener('resize', refreshMapSize, { passive: true });
-    window.setTimeout(refreshMapSize, 250);
-    window.setTimeout(refreshMapSize, 1000);
+    const map = window.L.map(container, { scrollWheelZoom: true }).setView([latitude, longitude], zoom);
+    window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a> contributors',
+    }).addTo(map);
 
     const items = Array.isArray(data.items) ? data.items : [];
     const markers = new Map();
@@ -213,25 +100,8 @@
       });
     });
     window.__photographyMap = map;
-    window.__photographyMapTileLayer = () => activeTileLayer;
   }
 
-  function schedulePhotographyInit() {
-    const container = document.getElementById('photography-map');
-    if (!container || container.dataset.initialized === 'true') return;
-    if (!('IntersectionObserver' in window)) {
-      initPhotography();
-      return;
-    }
-    const observer = new window.IntersectionObserver(entries => {
-      if (entries.some(entry => entry.isIntersecting)) {
-        observer.disconnect();
-        initPhotography();
-      }
-    }, { rootMargin: '240px 0px' });
-    observer.observe(container);
-  }
-
-  document.addEventListener('DOMContentLoaded', schedulePhotographyInit);
-  document.addEventListener('pjax:complete', schedulePhotographyInit);
+  document.addEventListener('DOMContentLoaded', initPhotography);
+  document.addEventListener('pjax:complete', initPhotography);
 })();

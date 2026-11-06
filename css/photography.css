@@ -63,7 +63,6 @@
 }
 
 #photography-map {
-  position: relative;
   width: 100%;
   min-height: 360px;
   overflow: hidden;
@@ -71,20 +70,6 @@
   border-radius: 14px;
   background: #e6eef0;
   z-index: 0;
-}
-
-.photography-map-status {
-  position: absolute;
-  z-index: 1000;
-  top: .75rem;
-  right: .75rem;
-  margin: 0;
-  padding: .35rem .55rem;
-  border-radius: 6px;
-  color: #52666a;
-  background: rgba(255, 255, 255, .88);
-  font-size: .78rem;
-  pointer-events: none;
 }
 
 .photography-map-fallback {
