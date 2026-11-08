@@ -2,7 +2,9 @@
   'use strict';
 
   const AMAP_CONFIG_URL = 'https://blogadmin.anbanyu.cn/api/amap/config';
-  const AMAP_SERVICE_HOST = 'https://blogadmin.anbanyu.cn/api/amap/_AMapService';
+  // AMap JSAPI's secure mode requires the proxy to be mounted at the
+  // first-level `/_AMapService` path.
+  const AMAP_SERVICE_HOST = 'https://blogadmin.anbanyu.cn/_AMapService';
   const AMAP_SCRIPT_URL = 'https://webapi.amap.com/maps?v=2.0';
 
   function readData() {
