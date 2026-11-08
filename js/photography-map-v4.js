@@ -153,6 +153,19 @@
     });
   }
 
+  function guardMapWheel(container) {
+    if (container.dataset.wheelGuard === 'true') return;
+    // Keep wheel zoom inside the map.  AMap and Leaflet handle the event
+    // themselves; preventing the browser default here stops the document
+    // from scrolling at the same time.
+    container.addEventListener('wheel', event => event.preventDefault(), {
+      capture: true,
+      passive: false,
+    });
+    container.style.overscrollBehavior = 'contain';
+    container.dataset.wheelGuard = 'true';
+  }
+
   function withTimeout(promise, timeout = 7000) {
     return Promise.race([
       promise,
@@ -312,6 +325,7 @@
   async function initPhotography() {
     const container = document.getElementById('photography-map');
     if (!container || container.dataset.initialized === 'true') return;
+    guardMapWheel(container);
     const data = readData() || {};
     const fallback = container.querySelector('.photography-map-fallback');
     try {
