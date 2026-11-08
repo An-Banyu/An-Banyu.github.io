@@ -51,10 +51,42 @@
     return wrapper;
   }
 
+  const tileSources = [
+    {
+      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      options: {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+        subdomains: 'abc',
+      },
+    },
+    {
+      url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      options: {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+      },
+    },
+    {
+      url: 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+      options: {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a> contributors',
+        maxZoom: 20,
+        subdomains: 'abc',
+      },
+    },
+    {
+      url: 'https://tile.openstreetmap.de/{z}/{x}/{y}.png',
+      options: {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a> contributors',
+        maxZoom: 18,
+      },
+    },
+  ];
+
   function initPhotography() {
     const container = document.getElementById('photography-map');
     if (!container || container.dataset.initialized === 'true') return;
-    container.dataset.initialized = 'true';
     const data = readData() || {};
     const mapSettings = data.map && typeof data.map === 'object' ? data.map : {};
     const center = Array.isArray(mapSettings.center) ? mapSettings.center : [];
@@ -68,13 +100,47 @@
       if (fallback) fallback.textContent = '地图暂时无法加载，作品列表仍可正常浏览。';
       return;
     }
+    container.dataset.initialized = 'true';
     if (fallback) fallback.remove();
 
     const map = window.L.map(container, { scrollWheelZoom: true }).setView([latitude, longitude], zoom);
-    window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a> contributors',
-    }).addTo(map);
+    let activeTileLayer = null;
+    let tileSourceIndex = -1;
+    let tileSourceTimer = null;
+
+    const mountTileSource = index => {
+      const source = tileSources[index];
+      if (!source) return;
+      if (tileSourceTimer) window.clearTimeout(tileSourceTimer);
+      if (activeTileLayer) map.removeLayer(activeTileLayer);
+      tileSourceIndex = index;
+      let loadedTile = false;
+      const layer = window.L.tileLayer(source.url, source.options);
+      layer.on('tileload', () => {
+        loadedTile = true;
+        if (tileSourceTimer) {
+          window.clearTimeout(tileSourceTimer);
+          tileSourceTimer = null;
+        }
+      });
+      layer.on('tileerror', () => {
+        if (loadedTile || tileSourceIndex !== index) return;
+        if (tileSourceTimer) window.clearTimeout(tileSourceTimer);
+        tileSourceTimer = window.setTimeout(() => {
+          tileSourceTimer = null;
+          mountTileSource(index + 1);
+        }, 1800);
+      });
+      activeTileLayer = layer.addTo(map);
+      tileSourceTimer = window.setTimeout(() => {
+        tileSourceTimer = null;
+        if (!loadedTile && tileSourceIndex === index) mountTileSource(index + 1);
+      }, 4500);
+    };
+
+    mountTileSource(0);
+    window.requestAnimationFrame(() => map.invalidateSize({ pan: false }));
+    window.setTimeout(() => map.invalidateSize({ pan: false }), 250);
 
     const items = Array.isArray(data.items) ? data.items : [];
     const markers = new Map();
