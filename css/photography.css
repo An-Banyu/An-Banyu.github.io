@@ -83,8 +83,10 @@
 
 .photography-map-fullscreen {
   position: absolute;
-  top: 3.25rem;
-  left: .55rem;
+  top: auto;
+  right: .55rem;
+  bottom: 2.1rem;
+  left: auto;
   z-index: 1001;
   display: grid;
   width: 2.25rem;
@@ -99,6 +101,13 @@
   cursor: pointer;
   font-size: 1.25rem;
   line-height: 1;
+}
+
+/* Keep AMap's required copyright notice visible in the map's lower-right corner. */
+#photography-map .amap-copyright {
+  right: .55rem !important;
+  bottom: .35rem !important;
+  left: auto !important;
 }
 
 .photography-map-fullscreen:hover,
