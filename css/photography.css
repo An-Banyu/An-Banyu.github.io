@@ -83,8 +83,8 @@
 
 .photography-map-fullscreen {
   position: absolute;
-  top: .55rem;
-  left: 3.1rem;
+  top: 3.25rem;
+  left: .55rem;
   z-index: 1001;
   display: grid;
   width: 2.25rem;
