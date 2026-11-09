@@ -77,11 +77,6 @@ body.photography-map-hovering {
   overflow: hidden;
 }
 
-#photography-map .amap-copyright,
-#photography-map .amap-logo {
-  display: none !important;
-}
-
 .photography-map-fallback {
   display: grid;
   min-height: 360px;
