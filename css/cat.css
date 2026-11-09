@@ -3,6 +3,11 @@ body::-webkit-scrollbar {
   width: 0;
 }
 
+/* Keep the cat marker, but remove the blue progress rail beside it. */
+#myscoll {
+  display: none !important;
+}
+
 .neko {
   width: 64px;
   height: 64px;
