@@ -73,19 +73,21 @@
   z-index: 0;
 }
 
+body.photography-map-hovering {
+  overflow: hidden;
+}
+
+#photography-map .amap-copyright,
+#photography-map .amap-logo {
+  display: none !important;
+}
+
 .photography-map-fallback {
   display: grid;
   min-height: 360px;
   place-items: center;
   margin: 0;
   color: #52666a;
-}
-
-.photography-map-attribution {
-  margin: .35rem 0 0;
-  color: var(--second-text-color);
-  font-size: .75rem;
-  text-align: right;
 }
 
 .photography-grid {

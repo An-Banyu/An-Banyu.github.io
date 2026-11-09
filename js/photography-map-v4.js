@@ -155,13 +155,36 @@
 
   function guardMapWheel(container) {
     if (container.dataset.wheelGuard === 'true') return;
-    // Keep wheel zoom inside the map.  AMap and Leaflet handle the event
-    // themselves; preventing the browser default here stops the document
-    // from scrolling at the same time.
-    container.addEventListener('wheel', event => event.preventDefault(), {
+    // Keep wheel zoom inside the map. AMap renders part of the map in an
+    // internal document, so a listener on the map node alone cannot always
+    // cancel the page's default scroll. Capture at the document level too.
+    const preventPageWheel = event => event.preventDefault();
+    container.addEventListener('wheel', preventPageWheel, {
       capture: true,
       passive: false,
     });
+    const pageWheelHandler = event => {
+      const rect = container.getBoundingClientRect();
+      const inside = event.clientX >= rect.left && event.clientX <= rect.right
+        && event.clientY >= rect.top && event.clientY <= rect.bottom;
+      if (inside) preventPageWheel(event);
+    };
+    document.addEventListener('wheel', pageWheelHandler, {
+      capture: true,
+      passive: false,
+    });
+    const lockPageScroll = () => document.body.classList.add('photography-map-hovering');
+    const unlockPageScroll = () => document.body.classList.remove('photography-map-hovering');
+    const cleanup = () => {
+      document.removeEventListener('wheel', pageWheelHandler, true);
+      container.removeEventListener('mouseenter', lockPageScroll);
+      container.removeEventListener('mouseleave', unlockPageScroll);
+      unlockPageScroll();
+    };
+    container.addEventListener('mouseenter', lockPageScroll);
+    container.addEventListener('mouseleave', unlockPageScroll);
+    document.addEventListener('pjax:send', cleanup, { once: true });
+    window.addEventListener('pagehide', cleanup, { once: true });
     container.style.overscrollBehavior = 'contain';
     container.dataset.wheelGuard = 'true';
   }
@@ -248,8 +271,6 @@
       amap.plugin(['AMap.ToolBar'], () => map.addControl(new amap.ToolBar({ position: 'LT' })));
     }
     addAmapMarkers(amap, map, data);
-    const attribution = document.querySelector('.photography-map-attribution');
-    if (attribution) attribution.textContent = '高德地图';
     container.dataset.initialized = 'true';
     container.dataset.mapProvider = 'amap';
     window.requestAnimationFrame(() => map.resize());
