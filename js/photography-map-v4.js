@@ -189,6 +189,44 @@
     container.dataset.wheelGuard = 'true';
   }
 
+  function resizeActiveMap() {
+    const map = window.__photographyMap;
+    if (!map) return;
+    if (typeof map.resize === 'function') map.resize();
+    if (typeof map.invalidateSize === 'function') map.invalidateSize({ pan: false });
+  }
+
+  function ensureFullscreenButton(container) {
+    if (container.querySelector('.photography-map-fullscreen')) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'photography-map-fullscreen';
+    button.title = '地图全屏';
+    button.setAttribute('aria-label', '地图全屏');
+    button.innerHTML = '<span aria-hidden="true">⛶</span>';
+    const update = () => {
+      const active = document.fullscreenElement === container;
+      button.classList.toggle('is-active', active);
+      button.title = active ? '退出地图全屏' : '地图全屏';
+      button.setAttribute('aria-label', active ? '退出地图全屏' : '地图全屏');
+      window.setTimeout(resizeActiveMap, 80);
+    };
+    button.addEventListener('click', async () => {
+      try {
+        if (document.fullscreenElement === container) {
+          await document.exitFullscreen();
+        } else if (typeof container.requestFullscreen === 'function') {
+          await container.requestFullscreen();
+        }
+      } catch (error) {
+        console.warn('[photography] fullscreen unavailable', error);
+      }
+    });
+    document.addEventListener('fullscreenchange', update);
+    container.appendChild(button);
+    update();
+  }
+
   function withTimeout(promise, timeout = 7000) {
     return Promise.race([
       promise,
@@ -286,6 +324,7 @@
       return null;
     }
     container.replaceChildren();
+    ensureFullscreenButton(container);
     const settings = mapSettings(data);
     const map = window.L.map(container, { scrollWheelZoom: true }).setView([settings.latitude, settings.longitude], settings.zoom);
     let activeTileLayer = null;
@@ -347,6 +386,7 @@
     const container = document.getElementById('photography-map');
     if (!container || container.dataset.initialized === 'true') return;
     guardMapWheel(container);
+    ensureFullscreenButton(container);
     const data = readData() || {};
     const fallback = container.querySelector('.photography-map-fallback');
     try {

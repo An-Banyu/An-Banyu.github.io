@@ -63,6 +63,7 @@
 }
 
 #photography-map {
+  position: relative;
   width: 100%;
   min-height: 360px;
   overflow: hidden;
@@ -71,6 +72,40 @@
   border-radius: 14px;
   background: #e6eef0;
   z-index: 0;
+}
+
+#photography-map:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  border-radius: 0;
+}
+
+.photography-map-fullscreen {
+  position: absolute;
+  top: .55rem;
+  left: 3.1rem;
+  z-index: 1001;
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(82, 122, 104, .35);
+  border-radius: .35rem;
+  color: #365d51;
+  background: rgba(255, 255, 255, .9);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .18);
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.photography-map-fullscreen:hover,
+.photography-map-fullscreen:focus-visible,
+.photography-map-fullscreen.is-active {
+  color: #fff;
+  background: #527a68;
 }
 
 body.photography-map-hovering {
